@@ -1,0 +1,101 @@
+<style type="text/css">
+  .template-404 .title + * {
+    margin-top: 1.6rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .template-404 .title + * {
+      margin-top: 2.4rem;
+    }
+  }
+</style>
+
+<div class="template-404 page-width page-margin center">
+  {% if section.settings.subtext != blank %}       
+  <p class="subtext-404">
+    {{ section.settings.subtext}}
+  </p>
+  {% endif %}
+
+  <h1 class="title {{ section.settings.heading_size }}">
+    {% if section.settings.title != blank %}
+       {{section.settings.title}}
+    {% else %}
+    {{ 'templates.404.title' | t }}
+    {% endif %}
+  </h1>
+  
+  {% if section.settings.info != blank %}       
+  <p class="info-404">
+    {{section.settings.info}}
+  </p>   
+  {% endif %}
+  {% if section.settings.link_label != blank %}
+    <p>&nbsp;</p>
+    <p>
+    <a href="{{ section.settings.link}}" class="button">
+      {{ section.settings.link_label }}
+    </a></p>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "404",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+     {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Título"
+    },
+     {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h3",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__4.label"
+        } 
+
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+   {
+      "type": "inline_richtext",
+      "id": "info",
+      "label": "Texto"
+    },
+     {
+      "type": "inline_richtext",
+      "id": "subtext",
+      "label": "Antetítulo"
+    },
+    {
+          "type": "text",
+          "id": "link_label",
+          "label": "Etiqueta del botón"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Enlace del botón"
+        }
+  
+  ]
+}
+{% endschema %}

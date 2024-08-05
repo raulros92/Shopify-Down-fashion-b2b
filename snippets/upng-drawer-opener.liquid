@@ -1,0 +1,5 @@
+{{ 'upng-drawer-opener.css' |  asset_url |  stylesheet_tag }}
+
+<button class="button rotatedBtn" id="upngDrawerOpener" style="display: none;">{{ 'upango.comparator.drawer.compare' | t }}</button>
+
+{% render 'upng-modal-form', form_id: 'ComparasionModal', form_type: 'compare_modal', form_size: "large" %}

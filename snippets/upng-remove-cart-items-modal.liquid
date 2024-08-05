@@ -1,0 +1,37 @@
+{{ 'upng-remove-cart-items.css' | asset_url | stylesheet_tag }}
+
+
+<modal-dialog id="RemoveCartItemsModal" class="upng-popup-modal">
+  <div
+    role="dialog"
+    aria-label="Remove Cart Items"
+    aria-modal="true"
+    class="upng-popup-modal__content"
+    tabindex="-1"
+  >
+    <p>
+      {{ 'sections.cart.remove_items_q' | t }}
+    </p>
+    <div class="container-buttons-remove-cart">
+      <button
+      id="ModalClose-RemoveCartItemsModal"
+      type="button"
+      class="button button--secondary"
+      aria-label="{{ 'accessibility.close' | t }}"
+      >
+      {{ 'sections.cart.cancel' | t }}
+      </button>
+      <button
+        id="ModalAccept-RemoveCartItemsModal"
+        type="button"
+        class="button button--primary"
+        aria-label="{{ 'accessibility.close' | t }}"
+      >
+        {{ 'sections.cart.confirm' | t }}
+      </button>
+    </div>
+
+  </div>
+</modal-dialog>
+
+<script src="{{ 'upng-remove-cart-items.js' | asset_url }}" defer></script>

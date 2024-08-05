@@ -1,0 +1,53 @@
+.page-width {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.flex-container {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
+.flex-column {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 1em;
+  padding: 0;
+  margin: 0 0 2em 0;
+}
+
+.flex-container * {
+  margin: 0;
+}
+
+.file-container {
+  padding: 0;
+}
+
+.icon-snippet {
+  width: 1em;
+}
+
+.section-button {
+  margin: 2em 0;
+}
+
+.folder{
+  text-decoration: none;
+}
+
+.folder:hover {
+  font-weight: 700;
+}
+
+.svg-icon {
+  padding-top: 7px;
+  width: 25px;
+  height: 25px;
+}

@@ -1,0 +1,115 @@
+{{ 'section-upng-myaccount-tables.css' | asset_url | stylesheet_tag }}
+{{ 'upng-alert.css' | asset_url | stylesheet_tag }}
+{{ 'upng-tag.css' | asset_url | stylesheet_tag }}
+
+{% # resultados %}
+<div id="posventa-results">
+  <h3>
+    {{ 'upango.posventa.modelo347.enunciado' | t }}
+    {{ 'now' | date: '%Y' | minus: 1 }}
+  </h3>
+
+  <p class="pt-3">
+    {{ 'upango.posventa.modelo347.textoSaludo' | t -}}
+    <br>
+    <br>
+    {{ 'upango.posventa.modelo347.textoPrimero' | t }}
+    {{ 'now' | date: '%Y' | minus: 1 }}
+    {{ 'upango.posventa.modelo347.textoSegundo' | t -}}
+    <br>
+    <br>
+    {{ 'upango.posventa.modelo347.nombre_fiscal_enunciado' | t }}
+    {{ customer.current_company.name }}
+  </p>
+
+  {% # inicio div tabla %}
+  <div style="overflow-x: scroll;" class="upng-table-micuenta">
+    <table id="trimestres-table" class="upng-posventa-table">
+      <thead>
+        <tr>
+          <th>{{ 'upango.posventa.modelo347.importe' | t }}</th>
+          <th>{{ 'upango.posventa.modelo347.trimestre1' | t }}</th>
+          <th>{{ 'upango.posventa.modelo347.trimestre2' | t }}</th>
+          <th>{{ 'upango.posventa.modelo347.trimestre3' | t }}</th>
+          <th>{{ 'upango.posventa.modelo347.trimestre4' | t }}</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h3>{{ 'upango.posventa.modelo347.enunciado_facturas' | t }}</h3>
+
+  <p class="pt-3">
+    {{ 'upango.posventa.modelo347.resultados_begin' | t }}
+    <span id="numero-resultados-consulta-posventa">0</span> {{ 'upango.posventa.modelo347.resultados_end' | t }}
+  </p>
+
+  {% # inicio div tabla %}
+  <div style="overflow-x: scroll;" class="upng-table-micuenta">
+    <table id="facturas-table" class="upng-posventa-table">
+      <thead>
+        <tr>
+          <th>{{ 'upango.posventa.modelo347.numero' | t }}</th>
+          <th>{{ 'upango.posventa.modelo347.fecha_facturacion' | t }}</th>
+          <th>{{ 'upango.posventa.modelo347.nombre_fiscal' | t }}</th>
+          <th></th>
+          <th>{{ 'upango.posventa.modelo347.total' | t }}</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  {% # Deben estar todos los posibles codigos de error devuelvos por el desarrollo de posventa %}
+  const errorMessages = {
+    no_data: "{{ 'upango.posventa.codigos-error.no_data' | t }}",
+    error_general: "{{ 'upango.posventa.codigos-error.no_data' | t }}",
+    error_company_id_no_recuperado_de_shopify: "{{ 'upango.posventa.codigos-error.error_company_id_no_recuperado_de_shopify' | t }}",
+    error_datos_no_recibidos_de_form: "{{ 'upango.posventa.codigos-error.error_datos_no_recibidos_de_form' | t }}"
+  };
+  const theadTitles = {
+    numero:"{{ 'upango.posventa.modelo347.numero' | t }}",
+    fechaFacturacion:"{{ 'upango.posventa.modelo347.fecha_facturacion' | t }}",
+    nombreFiscal: "{{ 'upango.posventa.modelo347.nombre_fiscal' | t }}",
+    total:"{{ 'upango.posventa.modelo347.total' | t }}",
+    importe: "{{ 'upango.posventa.modelo347.importe' | t }}",
+    trimestre1: "{{ 'upango.posventa.modelo347.trimestre1' | t }}",
+    trimestre2: "{{ 'upango.posventa.modelo347.trimestre2' | t }}",
+    trimestre3: "{{ 'upango.posventa.modelo347.trimestre3' | t }}",
+    trimestre4: "{{ 'upango.posventa.modelo347.trimestre4' | t }}",
+    total_cargos: "{{ 'upango.posventa.modelo347.total_cargos' | t }}",
+    total_abonos: "{{ 'upango.posventa.modelo347.total_abonos' | t }}",
+    total_modelo: "{{ 'upango.posventa.modelo347.total_modelo' | t }}",
+
+  };
+
+  const verDetalleText = "{{ 'upango.posventa.ver_detalle' | t }}";
+  const companyId = "{{ customer.current_company.id }}";
+  const companyFiscal = "{{ customer.current_company.name }}";
+</script>
+<script src="{{ 'upango-posventa-modelo-347.js' | asset_url }}" defer></script>
+<script src="{{ 'upango-posventa-commons.js' | asset_url }}" defer></script>
+
+{% # fin div tabla %}
+{% schema %}
+{
+  "name": "UPNG-modelo347",
+  "tag": "section",
+  "class": "section-modelo347 page-width",
+  "limit": 1,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "presets": [
+    {
+      "name": "UPNG modelo 347"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,69 @@
+{{ 'upng-alert.css' | asset_url | stylesheet_tag }}
+
+<div id="add-by-ref-inputs" class="page-width">
+  <input
+    type="hidden"
+    value="{{ section.id }}"
+    id="upng-obtenerSectionId"
+  >
+  <input type="search" id="add-by-ref-search">
+  <quantity-input class="quantity">
+    <button id="upng-add-by-ref-restar" class="quantity__button no-js-hidden" name="minus" type="button">
+      <span class="visually-hidden">
+        {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+      </span>
+      {% render 'icon-minus' %}
+    </button>
+    <input
+      class="quantity__input"
+      type="number"
+      name="quantity"
+      data-productid="{{ product.id }}"
+      id="add-by-ref-cantidad"
+      min="1"
+      value="1"
+    >
+    <button id="upng-add-by-ref-sumar" class="quantity__button no-js-hidden" name="plus" type="button">
+      <span class="visually-hidden">
+        {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+      </span>
+      {% render 'icon-plus' %}
+    </button>
+  </quantity-input>
+  <button
+    type="button"
+    class="button button--secondary"
+    id="add-by-ref-btn"
+  >
+    {{ 'products.product.add_to_cart' | t }}
+  </button>
+</div>
+
+<script src="{{ 'upng-add-by-reference.js' | asset_url }}" defer></script>
+
+<script>
+  {% # Deben estar todos los posibles codigos de error devuelvos por el desarrollo de posventa %}
+  const errorMessages = {
+    cart_error: "{{ 'sections.cart.cart_error' | t }}"
+  };
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.upng-add-by-reference.name",
+  "settings": [
+
+  ],
+  "limit": 1,
+  "presets": [
+    {
+      "name": "t:sections.upng-add-by-reference.settings.menu.label"
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "cart"
+    ]
+  }
+}
+{% endschema %}

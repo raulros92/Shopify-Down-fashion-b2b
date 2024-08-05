@@ -1,0 +1,419 @@
+<!--
+  Nota: Hay ciertos elementos de la sección donde se usa este snippet que son estáticos, por lo que el especio restante para esta tabla es demasiado pequeño
+-->
+{{ 'upng-alert.css' | asset_url | stylesheet_tag }}
+{{ 'upng-tag.css' | asset_url | stylesheet_tag }}
+
+{{ 'variants-table.css' | asset_url | stylesheet_tag }}
+
+{% assign columnNums = '' %}
+
+{% comment %}
+  Vamos a crear un array con los números de columna de cada una de las opciones.
+{% endcomment %}
+
+{% for setting in block.settings %}
+  {% case setting %}
+    {% when 'variant_name_column' %}
+      {% assign columnNums = columnNums | append: block.settings.variant_name_column | append: ',' %}
+    {% when 'variant_attributes_column' %}
+      {% assign columnNums = columnNums | append: block.settings.variant_attributes_column | append: ',' %}
+    {% when 'variant_stock_column' %}
+      {% assign columnNums = columnNums | append: block.settings.variant_stock_column | append: ',' %}
+    {% when 'variant_price_column' %}
+      {% assign columnNums = columnNums | append: block.settings.variant_price_column | append: ',' %}
+    {% when 'variant_input_column' %}
+      {% assign columnNums = columnNums | append: block.settings.variant_input_column | append: ',' %}
+    {% when 'variant_availability_column' %}
+      {% assign columnNums = columnNums | append: block.settings.variant_availability_column | append: ',' %}
+    {% when 'variant_sku_column' %}
+      {% assign columnNums = columnNums | append: block.settings.variant_sku_column | append: ',' %}
+    {% else %}
+
+  {% endcase -%}
+{%- endfor %}
+
+{% comment %}
+  Eliminamos el último caracter del array
+{% endcomment %}
+{% assign pos = columnNums | size | minus: 1 %}
+{% assign last_char = columnNums | slice: pos, 1 %}
+{% if last_char == ',' %}
+  {% assign columnNums = columnNums | slice: 0, pos %}
+{% endif -%}
+{%- assign columnNums = columnNums | split: ',' %}
+
+{% comment %}
+  Ahora hay que ordenar el array
+{% endcomment %}
+
+{% assign columnNums = columnNums | sort %}
+
+{% comment %}
+  Ahora tenemos que ver qué valor corresponde con qué opción.
+{% endcomment %}
+
+{% assign blockArray = '' %}
+
+{% comment %}
+  Por algún motivo, en el caso de que el usuario introduzca un mismo número varias veces, este case añadirá *todas*
+  las columnas (distintas) con ese mismo número (comportamiento extraño, pero beneficioso)
+  y no será hasta la siguiente iteración del bucle en la que se añadirá algún elemento repetido.
+  Puedo usar esto a mi favor para ordenar el array.
+{% endcomment %}
+
+{% for value in columnNums %}
+  {% assign valueInt = value | times: 1 %}
+  {% for setting in block.settings %}
+    {% case setting %}
+      {% when 'variant_name_column' %}
+        {% if block.settings.variant_name_column == valueInt and block.settings.enable_variant_name %}
+          {% assign blockArray = blockArray | append: 'variant_name' | append: ',' %}
+        {% endif %}
+      {% when 'variant_attributes_column' %}
+        {% if block.settings.variant_attributes_column == valueInt and block.settings.enable_variant_attributes %}
+          {% assign blockArray = blockArray | append: 'variant_attributes' | append: ',' %}
+        {% endif %}
+      {% when 'variant_stock_column' %}
+        {% if block.settings.variant_stock_column == valueInt and block.settings.enable_variant_stock %}
+          {% assign blockArray = blockArray | append: 'variant_stock' | append: ',' %}
+        {% endif %}
+      {% when 'variant_price_column' %}
+        {% if block.settings.variant_price_column == valueInt and block.settings.enable_variant_price %}
+          {% assign blockArray = blockArray | append: 'variant_price' | append: ',' %}
+        {% endif %}
+      {% when 'variant_input_column' %}
+        {% if block.settings.variant_input_column == valueInt and block.settings.enable_variant_input %}
+          {% assign blockArray = blockArray | append: 'variant_input' | append: ',' %}
+        {% endif %}
+      {% when 'variant_availability_column' %}
+        {% if block.settings.variant_availability_column == valueInt and block.settings.enable_variant_availability %}
+          {% assign blockArray = blockArray | append: 'variant_availability' | append: ',' %}
+        {% endif %}
+      {% when 'variant_sku_column' %}
+        {% if block.settings.variant_sku_column == valueInt and block.settings.enable_variant_sku %}
+          {% assign blockArray = blockArray | append: 'variant_sku' | append: ',' %}
+        {% endif %}
+      {% else %}
+
+    {% endcase %}
+  {% endfor %}
+{% endfor %}
+
+{% assign pos = blockArray | size | minus: 1 %}
+{% assign last_char = blockArray | slice: pos, 1 %}
+{% if last_char == ',' %}
+  {% assign blockArray = blockArray | slice: 0, pos %}
+{% endif %}
+
+{% comment %}
+  Prevenimos duplicados de esta manera.
+{% endcomment %}
+{% assign blockArray = blockArray | split: ',' | uniq %}
+
+<script>
+  {% assign active_variant_aux = product.selected_variant | default: product.variants[0] %}
+  const buttonIdVariantOptionActive = 'opcion-variante-' + "{{ active_variant_aux.options.first }}";
+  const activeVariantId = "{{ active_variant_aux.id }}";
+</script>
+
+{% assign variantesPorColor = block.settings.enable_variantes_color %}
+{% if variantesPorColor and product.variants.size > 1 %}
+  {% assign options_first_string = '' %}
+  {% assign variant_ids = '' %}
+  {% assign variant_skus = '' %}
+
+  {% for variant in product.variants %}
+    {% unless options_first_string contains variant.options.first %}
+      {% assign options_first_string = options_first_string | append: variant.options.first | append: ',' %}
+      {% assign variant_ids = variant_ids | append: variant.id | append: ',' %}
+      {% assign variant_skus = variant_skus | append: variant.sku | append: ',' %}
+    {% endunless %}
+  {% endfor %}
+
+  {% assign options_first_array = options_first_string | split: ',' | uniq %}
+  {% assign variant_ids_array = variant_ids | split: ',' | uniq %}
+  {% assign variant_skus_array = variant_skus | split: ',' | uniq %}
+
+  <div class="variant-options-container">
+    {% for option_first in options_first_array %}
+      {% if option_first != '' %}
+        {% assign index = forloop.index0 %}
+        {% comment %}
+          <button id="opcion-variante-{{ option_first }}" class= "opcion-variante button button--secondary" type="button" data-variant-id="{{ variant_ids_array[index] }}">{{ option_first }}</button>
+        {% endcomment %}
+        <button
+          class="opcion-variante variant-image-btn-main"
+          id="opcion-variante-{{ option_first }}"
+          data-sku="{{ variant_skus_array[index] }}"
+          data-url="{{ product.url }}"
+          data-variant-id="{{ variant_ids_array[index] }}"
+          type="button"
+          style="background-color: {{ shop.metaobjects['Colors'][option_first].color }};"
+        ></button>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  {% comment %} Estilos para el variant-options-container (Colores) {% endcomment %}
+  <style>
+    .variant-image-btn-main {
+      cursor: pointer;
+      height: 2em;
+      width: 2em;
+      border: 1px solid black; /* Estilo del botón normal */
+    }
+    .variant-image-btn-main:hover {
+      transform: scale(1.05);
+    }
+    .variant-image-main-selected {
+      border: 3px solid black !important; /* Estilo del botón seleccionado */
+    }
+
+    .variant-options-container {
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      gap: 0.5em;
+    }
+  </style>
+
+  <script src="{{ 'upng-variants-colors-main-product.js' | asset_url }}" defer></script>
+{% endif %}
+
+{% comment %}
+  Ahora simplemente quitamos el último caracter y convertimos el string en un array.
+{% endcomment %}
+
+<div id="variant-table-container" class="upng-table-variants">
+  <table>
+    <!-- Usar un tablerow para cada columna no me parecia apropiado -->
+    <thead>
+      <tr>
+        {% for blockName in blockArray %}
+          {% case blockName %}
+              {% comment %}
+                Ocultamos La primera columna - Variant - de la tabla
+                {% when 'variant_name' %}
+                  <th>{{ 'upango.variant_table.table.variant' | t }}</th>
+              {% endcomment %}
+            {% when 'variant_attributes' %}
+              {% for option in product.options %}
+                {% if block.settings.enable_variant_no_first_attribute %}
+                  {% unless forloop.first %}
+                    <th>{{ option }}</th>
+                  {% endunless %}
+                {% else %}
+                  <th>{{ option }}</th>
+                {% endif %}
+              {% endfor %}
+            {% when 'variant_stock' %}
+              {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+                <th>{{ 'upango.variant_table.table.stock' | t }}</th>
+              {% endif %}
+            {% when 'variant_price' %}
+              {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+                <th class="upng-price">{{ 'upango.variant_table.table.price' | t }}</th>
+              {% endif %}
+            {% when 'variant_availability' %}
+              {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+                <th>{{ 'upango.variant_table.table.availability' | t }}</th>
+              {% endif %}
+            {% when 'variant_input' %}
+              {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+                <th>{{ 'upango.variant_table.table.quantity' | t }}</th>
+              {% endif %}
+            {% when 'variant_sku' %}
+              {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+                <th>{{ 'upango.variant_table.table.sku' | t }}</th>
+              {% endif %}
+            {% else %}
+
+          {% endcase %}
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      {% assign active_variant = product.selected_variant | default: product.variants[0] %}
+      {% assign option_variant = active_variant.options.first %}
+
+      {% for variant in product.variants %}
+        {% if variant.options.first == option_variant or variantesPorColor != true %}
+          {% assign cart_quantity = 0 %}
+          {% assign default_step = 1 %}
+          {% assign default_min = 0 %}
+          {% assign disable_input = true %}
+          {% assign stock_quantity = 0 %}
+
+          {% for prod in cart.items %}
+            {% if prod.id == variant.id %}
+              {% assign cart_quantity = prod.quantity %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+
+          {% if variant.available == true or variant.inventory_policy == 'continue' %}
+            {% if variant.inventory_policy != 'continue' %}
+              {% assign stock_quantity = variant.inventory_quantity %}
+              {% if variant.quantity_rule.min != null %}
+                {% assign default_min = variant.quantity_rule.min %}
+              {% endif %}
+              {% if variant.quantity_rule.increment != null %}
+                {% assign default_step = variant.quantity_rule.increment %}
+              {% endif %}
+              {% if variant.quantity_rule.max != null %}
+                {% if stock_quantity > variant.quantity_rule.max %}
+                  {% assign stock_quantity = variant.quantity_rule.max %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+            {% assign disable_input = false %}
+            {% assign variant_id = variant.id %}
+          {% endif %}
+          <tr class="tableRow">
+            {% for blockName in blockArray %}
+              {% case blockName %}
+                  {% comment %}
+                    Ocultamos La primera columna - Variant - de la tabla
+                    {% when 'variant_name' %}
+                      <td>{{ variant.title }}</td>
+                  {% endcomment %}
+                {% when 'variant_attributes' %}
+                  {% for option in variant.options %}
+                    {% if block.settings.enable_variant_no_first_attribute %}
+                      {% unless forloop.first %}
+                        <td>
+                          <p>{{ option }}</p>
+                        </td>
+                      {% endunless %}
+                    {% else %}
+                      <td>
+                        <p>{{ option }}</p>
+                      </td>
+                    {% endif %}
+                  {% endfor %}
+                {% when 'variant_sku' %}
+                  <td>{{ variant.sku }}</td>
+                {% when 'variant_stock' %}
+                  {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+                    <td>
+                      <div class="flex-container">
+                        {% if variant.inventory_quantity > 0 %}
+                          <div class="colored-circle-green">&nbsp;</div>
+                          {{ variant.inventory_quantity | at_least: 0 }}
+                        {% else %}
+                          {% if variant.inventory_management == null %}
+                            <div class="colored-circle-orange">&nbsp;</div>
+                            {{ 'upango.variant_table.status.untracked' | t }}
+                          {% else %}
+                            {% if variant.next_incoming_date != blank %}
+                              <div class="colored-circle-skyblue">&nbsp;</div>
+                              {{ variant.inventory_quantity | at_least: 0 }}
+                            {% else %}
+                              <div class="colored-circle-red">&nbsp;</div>
+                              {{ variant.inventory_quantity | at_least: 0 }}
+                            {% endif %}
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                    </td>
+                  {% endif %}
+                {% when 'variant_price' %}
+                  {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+                    <td class="upng-price">{{ variant.price | money }}</td>
+                  {% endif %}
+                {% when 'variant_availability' %}
+                  {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+                    <td>
+                      {% if variant.next_incoming_date != blank and block.settings.show_availability == true %}
+                        <div class="status-warning__noBorder ">
+                          {{ 'upango.variant_table.status.available_date' | t }}
+                          {{ variant.next_incoming_date }}
+                        </div>
+                      {% else %}
+                        {% if variant.inventory_quantity > 0 or variant.inventory_management == null %}
+                          <div class="status-success__noBorder">
+                            {{ 'upango.variant_table.status.available' | t }}
+                          </div>
+                        {% else %}
+                          <div class="status-danger__noBorder">
+                            {{ 'upango.variant_table.status.unavailable' | t }}
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    </td>
+                  {% endif %}
+                {% when 'variant_input' %}
+                  {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+                    <td class="input-row">
+                      <div
+                        style="width: 50%;"
+                        id="Quantity-Form-{{ section.id }}"
+                        class="product-form__input product-form__quantity{% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_vertical_offset < 0 %} product-form__quantity-top{% endif %}"
+                        {{ block.shopify_attributes }}
+                      >
+                        <div class="price-per-item__container">
+                          <quantity-input
+                            class="quantity"
+                            data-url="{{ product.url }}"
+                            data-section="{{ section.id }}"
+                          >
+                            <button
+                              class="quantity__button no-js-hidden"
+                              name="minus"
+                              type="button"
+                            >
+                              {% render 'icon-minus' %}
+                            </button>
+                            <input
+                              class="quantity__input"
+                              type="number"
+                              name="quantity"
+                              id="{{ variant.id }}"
+                              step="{{ default_step }}"
+                              data-min="{{default_min }}"
+                              min="{{default_min }}"
+                              {% if variant.inventory_quantity <= 0 %}
+                                disabled
+                              {% endif %}
+                              data-cart-quantity="{{ cart_quantity }}"
+                              value="{{ cart_quantity }}"
+                              max="{{ stock_quantity | at_least: 0 }}"
+                              data-max="{{ stock_quantity | at_least: 0 }}"
+                              onkeydown="if(event.key==='.' || event.key==='-'){event.preventDefault();}"
+                            >
+                            <button
+                              class="quantity__button no-js-hidden"
+                              name="plus"
+                              type="button"
+                            >
+                              {% render 'icon-plus' %}
+                            </button>
+                          </quantity-input>
+                        </div>
+                      </div>
+                    </td>
+                  {% endif %}
+                {% else %}
+
+              {% endcase %}
+            {% endfor %}
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <!-- El lateral del producto es demasiado pequeño para meter algo así -->
+  <!--
+    <div class="flex-container flex-center"><div class="flex-container">    <div class="colored-circle-green">&nbsp;</div>    <p>{{ 'upango.variant_table.status.available' | t }}</p>  </div>  <div class="flex-container">    <div class="colored-circle-red">&nbsp;</div>    <p>{{ 'upango.variant_table.status.unavailable' | t }}</p>  </div>  <div class="flex-container">    <div class="colored-circle-orange">&nbsp;</div>    <p>{{ 'upango.variant_table.status.untracked' | t }}</p>  </div>  <div class="flex-container">    <div class="colored-circle-skyblue">&nbsp;</div>    <p>{{ 'upango.variant_table.status.stock_soon' | t }}</p>  </div></div>
+  -->
+  <br>
+  {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+    <button id="variantTableBtn" class="product-form__submit button button--primary flex-container button--full-width">
+      <!-- Esto ha dejado de funcionar por algún motivo -->
+      <!-- <div class="loader" id="table-loader">    <div class="lds-dual-ring"> </div>  </div> -->
+      {{ 'upango.variant_table.add_to_cart' | t }}
+    </button>
+  {% endif %}
+</div>
+<script src="{{ 'upng-variants-table.js' | asset_url }}" defer></script>

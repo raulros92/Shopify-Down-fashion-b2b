@@ -1,0 +1,32 @@
+<div class="page-width section-{{ section.id }}-padding">
+  {% render 'upng-matriz-variantes', block: section %}
+</div>
+
+{% schema %}
+{
+  "name": "Matriz Variantes",
+  "settings": [
+    {
+      "label": "t:sections.upng-matriz-variantes.settings.show_image",
+      "type": "checkbox",
+      "id": "show_image"
+    },
+    {
+      "label": "t:sections.upng-matriz-variantes.settings.invert_attributes",
+      "type": "checkbox",
+      "id": "invert_attributes"
+    },
+    {
+      "label": "t:sections.upng-matriz-variantes.settings.stock_alert",
+      "type": "number",
+      "id": "stock_alert",
+      "default": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Matriz Variantes"
+    }
+  ]
+}
+{% endschema %}

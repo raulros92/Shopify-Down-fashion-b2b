@@ -1,0 +1,47 @@
+.compare-modal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+.compare-modal-container p {
+  margin: 0;
+}
+
+.compare-row {
+  display: flex;
+  gap: 2em;
+  justify-content: end;
+}
+
+.compare-col {
+  max-width: 400px;
+  flex-basis: 400px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.upng-compare-modal {
+  display: flex;
+  justify-content: center;
+}
+
+@media screen and (max-width: 720px) {
+  .upng-popup-modal-large {
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+  }
+  .upng-compare-modal {
+    min-width: max-content;
+    padding: 1em;
+  }
+  .compare-modal-container {
+    min-width: 1200px;
+  }
+  .compare-modal-container td p {
+    word-wrap: break-word;
+    white-space: break-spaces;
+  }
+}

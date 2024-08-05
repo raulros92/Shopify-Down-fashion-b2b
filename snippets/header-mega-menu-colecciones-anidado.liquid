@@ -1,0 +1,174 @@
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+{{ 'section-upng-multicolumn-banners.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+
+  /*  Añadido */
+  .upng-menu-colecciones-anidado{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    /*flex-wrap: wrap;*/
+    align-content: center;
+    padding-bottom: 0rem !important;
+    padding-top: 0rem!important;
+
+  }
+  .upng-menu-colecciones-anidado-colections{
+    width: 100%;
+    list-style: none;
+    display: contents;
+  }
+
+  .upng-menu-items{
+    background: white;
+    min-width: 400px;
+  }
+  .upng-menu-colecciones-anidado ul{
+    /*
+    padding-top: 3rem;
+    padding-bottom:3rem;
+    */
+    padding-left:3rem;
+
+  }
+  .upng-menu-colecciones-anidado .upng-menu-items .list-menu li{
+    padding:20px;
+    /* font-family: Nimbus Sans; */
+    /* font-style: normal; */
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.35;
+    text-align: left;
+    color: #24160b;
+    border-bottom: 1px solid #e1deda !important;
+
+  }
+  .upng-menu-colecciones-anidado .upng-menu-items .list-menu li:hover{
+    padding:20px;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.35;
+    text-align: left;
+    color: #24160b;
+    border-bottom: 1px solid #e1deda !important;
+    background: #fcf8f4 !important;
+
+  }
+  .upng-menu-colecciones-anidado-colections .title-second-level{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.35;
+    text-align: left;
+    color: #24160b;
+  }
+  .upng-menu-colecciones-anidado-colections .list-menu-collection{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    list-style: none;
+    gap: 2rem;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  .upng-menu-colecciones-anidado-colections .upng-colections-image{
+    width: 200px;
+    height: 83px;
+    background: #beb9b3;
+    border-radius: 15px;
+  }
+  .upng-menu-colecciones-anidado-colections .upng-colections-image img{
+    width: -webkit-fill-available;
+  }
+{%- endstyle -%}
+
+<div
+  id="MegaMenu-Content-{{ forloop.index }}"
+  class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup upng-menu-colecciones-anidado"
+  tabindex="-1"
+  style="opacity: 1; transform: translateY(0);"
+>
+  {%- if block.settings['menu-colecciones-anidado-menu-'] %}
+    <div class="upng-menu-items">
+      <ul class="list-menu" role="list">
+        {%- comment -%} Menu {%- endcomment -%}
+        <div class="multicolumn-card content-container">
+          {%- for link in block.settings['menu-colecciones-anidado-menu'].links -%}
+            <li>
+              <a>{{- link.title -}}</a>
+              {%- comment -%} 1 nivel - lateral izquierda  {%- endcomment -%}
+            </li>
+          {%- endfor -%}
+        </div>
+      </ul>
+    </div>
+  {%- endif -%}
+  <div class="slider-mobile-gutter upng-multicolum upng-menu-colecciones-anidado-colections">
+    <ul
+      class="list-menu-collection"
+      id="Slider-{{ section.id }}"
+      role="list"
+    >
+      {%- for link in block.settings['menu-colecciones-anidado-menu'].links -%}
+        {%- comment -%} 2 nivel - derecha {%- endcomment -%}
+        {%- for childlink in link.links -%}
+          {%- comment -%} recorro los item - 2 nivel  {%- endcomment -%}
+          <li>
+            <p class="title-second-level">{{ childlink.title | escape }}</p>
+            <ul class="list-menu-collection" role="list">
+              {%- for grandchildlink in childlink.links -%}
+                <li>
+                  {%- for collection in collections -%}
+                    {%- comment -%} recorro colecciones {%- endcomment -%}
+                    {%- if collection.image -%}
+                      {%- assign collection_image = collection.image -%}
+                    {%- elsif collection.products.first and collection.products.first.images != empty -%}
+                      {%- assign collection_image = collection.products.first.featured_image -%}
+                    {%- else -%}
+                      {%- assign collection_image = blank -%}
+                    {%- endif -%}
+
+                    {%- if collection.url == grandchildlink.url %}
+                      <div class="upng-colections-image">
+                        <img src="{{ collection_image | image_url: width: 480 }}" width="480" height="320" loading="eager">
+                      </div>
+                      <a
+                        id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                        href="{{ grandchildlink.url }}"
+                        class="mega-menu__link link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
+                        {% if grandchildlink.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{ grandchildlink.title | escape }}
+                      </a>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </li>
+        {%- endfor -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>

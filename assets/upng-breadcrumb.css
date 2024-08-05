@@ -1,0 +1,38 @@
+
+  .breadcrumbs {
+    color: rgb(var(--color-breadcrumbs));
+    font-size: 12px;
+    padding:1.6rem 0;
+    text-align:left;
+  }
+
+  .breadcrumbs a {
+    color: rgb(var(--color-breadcrumbs));
+    text-decoration: none;
+  }
+
+  .breadcrumbs a:hover,
+  .breadcrumbs a:focus {
+    text-decoration: underline;
+  }
+
+  .breadcrumbs__list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .breadcrumbs__item {
+    display: inline-block;
+  }
+
+  .breadcrumbs__item:not(:last-child):after {
+    content: '-';
+    margin: 0 0.2em;
+  }
+
+  .breadcrumbs__link[aria-current='page'] {
+    color: inherit;
+    font-weight: normal;
+    text-decoration: none;
+  }

@@ -1,0 +1,195 @@
+{% if customer.b2b? %}
+  {{ 'upng-alert.css' | asset_url | stylesheet_tag }}
+  {{ 'upng-exportador-catalogo-form.css' | asset_url | stylesheet_tag }}
+
+  {% # Tocar este valor para que se puedan recuperar mas productos con collections.all.products # %}
+  {% assign productsPerPage = 50000 %}
+
+  {% assign all_categorias = '' %}
+
+  {% paginate collections.all.products by productsPerPage %}
+    {% for product in collections.all.products %}
+      {% if product.metafields.upng.categoria != blank %}
+        {% assign product_categoria = product.metafields.upng.categoria.value | downcase %}
+        {% unless all_categorias contains product_categoria %}
+          {% assign all_categorias = all_categorias | append: product_categoria | append: ',' %}
+        {% endunless %}
+      {% endif %}
+    {% endfor %}
+  {% endpaginate %}
+
+  {% assign all_categorias = all_categorias | split: ',' | uniq | sort %}
+
+  <div class="page-width">
+    <div id="exportar-catalogo-result"></div>
+    <form id="formularioExportarCatalogo" action="/apps/upango_exportador/exportar" method="post">
+      <div
+        class="form-group "
+        id="select-container"
+        style="padding-left: {{ section.settings.desplazamiento_derecha }}%;"
+      >
+        <div class="upng-fields">
+          <div style="display: flex; flex-direction:column; padding-right: 2rem;" >
+            <p style="font-weight:700">Selecciona categorías</p>
+            
+
+            <div class="custom-dropdown">
+              <!-- Código para Categorias -->
+              <div class="dropdown">
+                <button type="button" class="dropdown-btn">{{ 'upango.exportador_catalogo_form.categoria' | t }}</button>
+                <div class="dropdown-content">
+                  <div class="checkbox-list" id="categoria-checkbox-list"></div>
+                  <select name="categoria[]" id="categoria" multiple class="hidden-select">
+                    {% for categoria in all_categorias %}
+                      <option value="{{ categoria }}">{{ categoria }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+          </div>
+          <div style="display: flex; flex-direction:column">
+            <p style="font-weight:700">Información de contacto</p>
+            <!-- Nuevo campo para la compañía -->
+            <div class="field" style = "margin-bottom: 1rem;">
+              <input
+                class="field__input"
+                type="text"
+                required="required"
+                autocomplete="name"
+                name="compania"
+                id="compania"
+                placeholder="{{ 'upango.alta-form.name' | t }}"
+              >
+              <label class="field__label" for="compania">
+                {{ 'upango.exportador_catalogo_form.compania' | t }}
+                <span aria-hidden="true">*</span></label
+              >
+            </div>
+            <!-- Campo para datos de contacto -->
+            <div class="field"style = "margin-bottom: 1rem; margin-top: 1rem;">
+              <input
+                class="field__input"
+                type="text"
+                required="required"
+                autocomplete="name"
+                name="contacto"
+                id="contacto"
+                placeholder="{{ 'upango.alta-form.name' | t }}"
+              >
+              <label class="field__label" for="contacto">
+                {{ 'upango.exportador_catalogo_form.contacto' | t }}
+                <span aria-hidden="true">*</span></label
+              >
+            </div>
+         
+          
+            <!-- Input para adjuntar imagen -->
+            <div class="form-group">
+              <label for="logo" style="font-weight:700;">{{ 'upango.exportador_catalogo_form.logo' | t }}</label>
+              <input type="file" name="logo" id="logo" accept="image/*">
+            </div>
+            <div>
+              <p style="font-weight:700">{{ 'upango.exportador_catalogo_form.mas_opciones' | t }}</p>
+              <!-- Checkbox para incluir enlaces a páginas web -->
+              <div class="form-group" style="display: flex;">
+                <input type="checkbox" name="incluye_enlaces" id="incluye_enlaces">
+                <label for="incluye_enlaces">{{ 'upango.exportador_catalogo_form.enlaces' | t }}</label>
+              </div>
+
+              <!-- Checkbox para mostrar precios -->
+              <div class="form-group" style="">
+                <div style="display: flex;">
+                  <input type="checkbox" name="mostrar_precios" id="mostrar_precios">
+                  <label for="mostrar_precios">{{ 'upango.exportador_catalogo_form.mostrar_precios' | t }}</label>
+                </div>
+                <div id="precios_opciones" style="display: none; padding-left: 1.5em;">
+                  <!-- Checkbox para mostrar precios sin IVA -->
+                  <input type="checkbox" name="mostrar_precios_sin_iva" id="mostrar_precios_sin_iva">
+                  <label for="mostrar_precios_sin_iva">{{ 'upango.exportador_catalogo_form.sin_iva' | t }}</label>
+
+                  <!-- Checkbox para mostrar precios con IVA -->
+                  <input type="checkbox" name="mostrar_precios_iva" id="mostrar_precios_iva">
+                  <label for="mostrar_precios_iva">{{ 'upango.exportador_catalogo_form.con_iva' | t }}</label>
+                </div>
+              </div>
+
+              <!-- Checkbox para mostrar referencias -->
+              <div class="form-group" style="display: flex;">
+                <input type="checkbox" name="mostrar_referencia" id="mostrar_referencia">
+                <label for="mostrar_referencia">{{ 'upango.exportador_catalogo_form.mostrar_referencia' | t }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" id="submitButtonExportador" class="button button--primary">
+          <span>{{ 'upango.exportador_catalogo_form.enviar' | t }}</span>{% render 'loading' %}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const mostrarPreciosCheckbox = document.getElementById('mostrar_precios');
+      const preciosOpciones = document.getElementById('precios_opciones');
+
+      // Mostrar/ocultar los checkboxes basados en el estado inicial
+      preciosOpciones.style.display = mostrarPreciosCheckbox.checked ? 'flex' : 'none';
+
+      // Añadir un event listener para cambiar la visibilidad de los checkboxes
+      mostrarPreciosCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+          preciosOpciones.style.display = 'flex';
+        } else {
+          preciosOpciones.style.display = 'none';
+        }
+      });
+    });
+
+    const shop = '{{ shop.domain }}';
+    const localizacion = '{{ customer.current_location.id }}';
+    const shopName = '{{ shop.name }}';
+    const idioma = '{{ shop.locale }}';
+    const email = '{{ customer.email }}';
+
+    const locales = {
+      alert_ok: "{{ 'upango.exportador_catalogo_form.alert_ok' | t }}",
+      alert_respuesta_mal: "{{ 'upango.exportador_catalogo_form.alert_respuesta_mal' | t }}",
+      alert_fallo: "{{ 'upango.exportador_catalogo_form.alert_fallo' | t }}",
+    };
+  </script>
+  <script src="{{ 'upng-form-exportador-catalogo.js' | asset_url }}" defer></script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Formulario exportador",
+  "settings": [
+    {
+      "type": "range",
+      "default": 10,
+      "id": "desplazamiento_derecha",
+      "label": "Desplazamiento hacia la derecha",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Formulario exportador"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,20 @@
+<div class="product-compare-checkbox-container">
+  {% assign keys = settings.comparasion_whitelist |  split: ' ' %}
+  {% assign metafield_data = "" %}
+  {% for key in keys %}
+    {% assign metafieldsByKey = product.metafields[key] %}
+    {% assign i = 0 %}
+    {% for metafield in metafieldsByKey %}
+      {% for val in metafield %}
+        {% assign iMod = i |  modulo: 2 %}
+        {% if i == 0 or iMod == 0 %}
+          {% assign metafield_data = metafield_data |  append: metafield[0] |  append: ':' %}
+        {% else %}
+          {% assign metafield_data = metafield_data |  append: metafield[1] | append: ', ' %}
+        {% endif %}
+        {% assign i = i |  plus: 1 %}
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
+  <input type="checkbox" product-target="{{ product.handle }}" class="compare-checkbox" product-metafields='{{ metafield_data }}'>
+</div>

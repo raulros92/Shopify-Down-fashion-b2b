@@ -1,0 +1,108 @@
+{{ 'upng-usuarios-secundarios.css' | asset_url | stylesheet_tag }}
+{{ 'upng-alert.css' | asset_url | stylesheet_tag }}
+{{ 'section-upng-myaccount-tables.css' | asset_url | stylesheet_tag }}
+
+<div class="usuariosSecundariosError"></div>
+  <div class="usuarios-secundarios-container section-{{ section.id }}-padding page-width">
+  {% comment %} 
+    Por motivos de desarrollo voy a dejar el ID fijo por el momento. 
+  {% endcomment %}
+  <div id="{{ customer.id }}" class="upng-table-micuenta" style="padding-bottom: 48px;">
+    <table id="usuariosSecundarios-table" class="upng-posventa-table">
+      <thead>
+        <tr>
+          <th>{{ 'upango.usuarios-secundarios.tabla.name' | t }}</th>
+          <th>{{ 'upango.usuarios-secundarios.tabla.email' | t }}</th>
+          <th>{{ 'upango.usuarios-secundarios.tabla.allowOrder' | t }}</th>
+          <th>{{ 'upango.usuarios-secundarios.tabla.showAdmin' | t }}</th>
+          <th>{{ 'upango.usuarios-secundarios.tabla.dontShowPrices' | t }}</th>
+          <th>{{ 'upango.usuarios-secundarios.tabla.prices' | t }}</th>
+          <th>{{ 'upango.usuarios-secundarios.tabla.retailPrice' | t }}</th>
+          <th>{{ 'upango.usuarios-secundarios.tabla.addresses' | t }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="usuarios-secundarios-inputs">
+          <td>
+            <input
+              type="text"
+              name="nombre"
+              id="usuarios-secundarios-nombre"
+              class="field__input"
+              placeholder="Nombre..."
+            >
+          </td>
+          <td>
+            <input
+              type="email"
+              name="email"
+              id="usuarios-secundarios-email"
+              class="field__input"
+              placeholder="Email..."
+            >
+          </td>
+          <td>
+            <input type="checkbox" name="permitirPedidos">
+          </td>
+          <td>
+            <input type="checkbox" name="verAdmin">
+          </td>
+          <td>
+            <input type="radio" name="preciosRad">
+          </td>
+          <td>
+            <input type="radio" name="preciosRad">
+          </td>
+          <td>
+            <input type="radio" name="preciosRad">
+          </td>
+          <td class="checkbox-direction-column">
+            {% comment %}
+              Esto no funciona en localhost, debido a que requiere que exista la variable "customer".
+            {% endcomment %}
+            {% for location in customer.current_company.available_locations %}
+              <div>
+                <input
+                  type="checkbox"
+                  name="address"
+                  id="address1"
+                  class="gid://shopify/CompanyLocation/{{ location.id }}"
+                >
+                <label for="address1">
+                  {{- customer.current_company.name }}
+                  {{ location.shipping_address.address1 }}
+                  {{ location.shipping_address.zip }}
+                  {{ location.shipping_address.city }}
+                  {{ location.shipping_address.country.name -}}
+                </label>
+              </div>
+            {% endfor %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="upng-table-micuenta-pagination">
+      <button class="button usuarios-secundarios-previous-page button--secondary" style="">{{ 'upango.usuarios-secundarios.tabla.prevPage' | t }}</button>
+      <button class="button usuarios-secundarios-next-page button--secondary" style="display: none;">{{ 'upango.usuarios-secundarios.tabla.nextPage' | t }}</button>
+      <button style ="margin-top: 48px;" class="button usuarios-secundarios-save-changes">{{ 'upango.usuarios-secundarios.tabla.saveChanges' | t }}</button>
+    </div>
+  </div>
+  <script src="{{ 'upng-usuarios-secundarios.js' | asset_url }}" defer></script>
+</div>
+
+{% schema %}
+{
+  "name": "Usuarios Secundarios",
+  "class": "page-width",
+  "limit": 1,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "presets": [
+    {
+      "name": "Usuarios Secundarios"
+    }
+  ]
+}
+{% endschema %}

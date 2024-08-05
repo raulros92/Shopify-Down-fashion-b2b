@@ -1,0 +1,27 @@
+.modo-discreto__center {
+    align-self: center;
+}
+
+#modo-discreto {
+    cursor: pointer;
+  }
+  
+@media screen and (max-width: 990px) {
+    #localization-wrapper__modo-discreto {
+        grid-area: auto;
+        align-self: center;
+        display: flex;
+        padding-left: 10px;
+    }
+    .utility-bar__grid{
+        display: flex;
+    }
+    .modo-discreto__center{
+        flex-wrap: nowrap;
+    }
+    .modo-discreto__center label {
+        width: max-content;
+    }
+}
+
+

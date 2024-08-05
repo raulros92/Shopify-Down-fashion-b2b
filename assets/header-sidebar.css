@@ -1,0 +1,191 @@
+/* The sidepanel menu */
+/*@NK: sidebar panel menu*/
+header-sidebarpanel {
+  justify-self: start;
+}
+.page-width.sidebarpanel-menu {
+  max-width: 100%;
+}
+.header.page-width.sidebarpanel-menu {
+  padding-left: var(--header-full-padding-horizontal);
+  padding-right: var(--header-full-padding-horizontal);
+}
+@media screen and (min-width: 990px) {
+  .header--top-left.sidebarpanel-menu, .header--middle-left.sidebarpanel-menu {
+    grid-template-areas:"navigation heading icons";
+    grid-template-columns: auto 1fr auto;
+    column-gap: 1rem;
+  }
+}  
+
+  
+  #openbtnSide {
+    cursor: pointer; 
+    border: none;
+    font-size: 20px;
+    width: 4.4rem;
+    height: 4.4rem;
+    background:none;
+  }
+
+
+.sideBarPanel_tab {
+  overflow: hidden;
+  display:flex;
+  flex-direction:row;
+  gap:1.2rem;
+}
+.sideBarPanel_tab .tablinks {
+    background-color: inherit;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding:1rem 0;
+    transition: 0.3s;
+    font-family:inherit;
+    font-size:1.6rem;
+    border-bottom:2px solid transparent;
+  }
+  
+  /* Create an active/current tablink class */
+.sideBarPanel_tab .tablinks.active {
+    border-bottom-color:#191919;
+    font-weight: bold; /* Establece el título en negrita */
+  }
+  
+  /* Style the tab content */
+.sideBarPanel_tabcontent {
+    display: none;
+    padding:2rem 0;
+    border-top: none;
+    transition:all .2s ease-out 0s;
+
+}
+
+.header__icon--menu {
+  position: initial;
+}
+.sideBarPanel {
+    display:flex; 
+    flex-direction:column;
+    height: 100vh;    
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0;
+    left: 0;
+    background-color:transparent; /* Black*/
+    overflow-x: hidden;
+    padding-top: 4rem; 
+    transition: .5s;
+}
+.closebtnSide{
+  margin-top:2rem;
+  background:#fff;
+}
+
+.sideBarPanel__inner-container {
+  position: relative;
+  height: 100%;
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:flex-start;
+}
+.sideBarPanel_content{
+   background:rgba(255,255,255,1);
+   height:100%;
+   width:calc(100% - 2rem);
+  padding:2rem 0;
+  & > div{
+    padding-left:1rem;
+    white-space:nowrap;
+    width:100%;
+  }
+  & nav{
+    padding:2rem;
+  }
+  & .header__menu-item{
+    padding:0.8rem 0;
+    font-size:1.6rem;
+  }
+}
+.sideBarPanel__linklist{
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  display: flex;
+  justify-content: flex-start;
+  white-space: nowrap;
+  position:relative;
+  row-gap:.8rem;
+  transition:opacity .2s linear 0s;
+  & > li{
+    max-width: 50%;
+  }
+  & summary{
+    border-bottom:1px solid transparent;
+  }
+  & summary[aria-expanded="true"]{
+    border-bottom-color:var(--color-foreground);
+  }
+  & summary:hover{
+    color:rgba(var(--color-foreground), 1);
+  }
+}
+.sideBarPanel__nested-linklist{
+border-inline-start-width: 0;
+  row-gap: 0;
+  margin-block: 0;
+    margin-block-end: 0px;
+  margin-block-end: 0px;
+  margin-inline-start: 0;
+  padding-inline-start: 0;
+  display: flex;
+  flex-wrap: wrap;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: none !important;
+  max-width: 50%;
+  padding-right: 0;
+  flex-direction: column;
+  width: 100%;
+  white-space: normal;
+  left: auto;
+  margin-block-end: 0 !important;
+  font-size: 1.4rem;
+  & .header__menu-item{
+    font-size:inherit;
+  }
+}
+.sideBarPanel_tabcontent:not(.visible) .sideBarPanel__linklist{ opacity:0}
+.sideBarPanel_tabcontent.visible .sideBarPanel__linklist{
+   animation: animateSideBarPanelLinklist .5s ease-out;
+}
+@keyframes animateSideBarPanelLinklist {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+@media screen and (min-width: 990px) {
+  .sideBarPanel.open-sidebar {
+    width:40rem;
+    border-width: 0 var(--drawer-border-width) 0 0;
+    border-style: solid;
+    border-color: rgba(var(--color-foreground), var(--drawer-border-opacity));
+  }  
+  .shopify-section-header-sticky.scrolled-past-header .sideBarPanel {
+  padding-top:0;
+}
+}
+@media screen and (max-width: 989px) {
+    #sideBarPanel,
+    #openbtnSide {
+      display: none !important;
+    }
+  }

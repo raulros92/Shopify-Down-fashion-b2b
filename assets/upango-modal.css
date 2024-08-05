@@ -1,0 +1,163 @@
+/* Form popup */
+/*TODO: Repasar esce CSS basado en elementos de section-main-products para ver si hay que hacer limpieza o falta algo*/
+.upng-popup-modal {
+  box-sizing: border-box;
+  opacity: 0;
+  position: fixed;
+  visibility: hidden;
+  z-index: -1;
+  margin: 0 auto;
+  top: 0;
+  left: 0;
+  overflow: auto;
+  width: 100%;
+  background: rgba(var(--color-foreground), 0.2);
+  height: 100%;
+}
+
+.upng-popup-modal[open] {
+  opacity: 1;
+  visibility: visible;
+  z-index: 101;
+}
+
+.upng-popup-modal__content {
+  border-radius: var(--popup-corner-radius);
+  background-color: rgb(var(--color-background));
+  overflow: auto;
+  height: 80%;
+  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 5rem;
+  width: 92%;
+  position: absolute;
+  top: 0;
+  padding: 0 1.5rem 0 3rem;
+  border-color: rgba(var(--color-foreground), var(--popup-border-opacity));
+  border-style: solid;
+  border-width: var(--popup-border-width);
+  box-shadow: var(--popup-shadow-horizontal-offset) var(--popup-shadow-vertical-offset) var(--popup-shadow-blur-radius)
+    rgba(var(--color-shadow), var(--popup-shadow-opacity));
+}
+
+.upng-popup-modal__content.focused {
+  box-shadow: 0 0 0 0.3rem rgb(var(--color-background)), 0 0 0.5rem 0.4rem rgba(var(--color-foreground), 0.3),
+    var(--popup-shadow-horizontal-offset) var(--popup-shadow-vertical-offset) var(--popup-shadow-blur-radius)
+      rgba(var(--color-shadow), var(--popup-shadow-opacity));
+}
+
+.upng-popup-modal__content:focus-visible {
+  box-shadow: 0 0 0 0.3rem rgb(var(--color-background)), 0 0 0.5rem 0.4rem rgba(var(--color-foreground), 0.3),
+    var(--popup-shadow-horizontal-offset) var(--popup-shadow-vertical-offset) var(--popup-shadow-blur-radius)
+      rgba(var(--color-shadow), var(--popup-shadow-opacity));
+}
+
+@media screen and (min-width: 750px) {
+  .upng-popup-modal__content {
+    height: auto;
+    margin-top: 10rem;
+    padding: 29px;
+    max-width: max-content; 
+  }
+
+  .upng-popup-modal__content.upng-mispedidos {
+    height: auto;
+    margin-top: 10rem;
+    padding: 29px;
+    width: 950px !important;
+  }
+}
+
+.upng-popup-modal__content img {
+  max-width: 100%;
+}
+
+@media screen and (max-width: 749px) {
+  .upng-popup-modal__content table {
+    display: block;
+    max-width: fit-content;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin: 0;
+  }
+}
+
+.upng-popup-modal__opener {
+  display: inline-block;
+}
+
+.upng-popup-modal__button {
+  font-size: 1.6rem;
+  padding-right: 1.3rem;
+  padding-left: 0;
+  min-height: 4.4rem;
+  text-underline-offset: 0.3rem;
+  text-decoration-thickness: 0.1rem;
+  transition: text-decoration-thickness var(--duration-short) ease;
+}
+
+.upng-popup-modal__button:hover {
+  text-decoration-thickness: 0.2rem;
+}
+
+.upng-popup-modal__content-info {
+  text-align: center;
+}
+
+.upng-popup-modal__content-info > * {
+  height: auto;
+  margin: 0 auto;
+  max-width: 100%;
+  width: 100%;
+}
+
+@media screen and (max-width: 749px) {
+  .upng-popup-modal__content-info > * {
+    max-height: 100%;
+  }
+}
+
+.upng-popup-modal__toggle {
+  background-color: rgb(var(--color-background));
+  border: 0.1rem solid rgba(var(--color-foreground), 0.1);
+  border-radius: 50%;
+  color: rgba(var(--color-foreground), 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: sticky;
+  padding: 1.2rem;
+  z-index: 2;
+  width: 4rem;
+  margin: 0 0 0 auto;
+}
+
+.upng-popup-modal__toggle:hover {
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.upng-popup-modal__toggle .icon {
+  height: auto;
+  margin: 0;
+  width: 2.2rem;
+}
+
+.upng-mispedidos th,
+.upng-mispedidos td {
+  width: 8rem !important;
+}
+
+.upng-mispedidos th:first-child,
+.upng-mispedidos td:first-child {
+  width: 15rem !important;
+}
+
+.upng-popup-modal-large {
+  width: 70%;
+}
+
+.upng-popup-modal-medium {
+  width: 40%;
+}

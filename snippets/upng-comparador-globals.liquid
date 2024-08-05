@@ -1,0 +1,23 @@
+<script>
+    var MAX_PRODUCTOS_COMPARADOR = {{ settings.comparator_max_products }};
+    var comparador_productos_traducciones = {
+      title: "{{ 'upango.comparator.title' | t }}",
+      products: {
+        name: "{{ 'upango.comparator.products.name' | t }}",
+        price: "{{ 'upango.comparator.products.price' | t }}",
+        description: "{{ 'upango.comparator.products.description' | t }}"
+      },
+      pill: {
+        text: "{{ 'upango.comparator.pill.text' | t }}"
+      },
+      drawer: {
+        compare: "{{ 'upango.comparator.drawer.compare' | t }}",
+        delete: "{{ 'upango.comparator.drawer.delete' | t }}"
+      },
+      modal: {
+        see_product: "{{ 'upango.comparator.modal.see_product' | t }}",
+        delete_product: "{{ 'upango.comparator.modal.delete_product' | t }}"
+      }
+    };
+    var comparador_icon_remove = `{% render 'icon-remove', remove_size:'24' %}`;
+  </script>

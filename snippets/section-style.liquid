@@ -1,0 +1,29 @@
+{% comment %}
+- section_id: {string} Section id
+- padding_top: {String} The setting changes the padding-top of section
+- padding_bottom: {String} The setting changes the padding-bottom of section
+  Usage:
+  {% render 'section-style' section_id: section, padding_top:padding_top, padding_bottom:padding_bottom  %}
+{% endcomment %}
+{% if settings.padding_vertical_sections != padding_top or settings.padding_vertical_sections != padding_bottom %}  
+{%- style -%}
+  .section-{{ section_id }}-padding {
+    {% if settings.padding_vertical_sections != padding_top %}  
+      padding-top: calc({{ padding_top }}px * var(--padding-scale)) !important;
+    {% endif %}
+    {% if settings.padding_vertical_sections != padding_bottom %}
+      padding-bottom: calc({{ padding_bottom }}px * var(--padding-scale)) !important;
+    {% endif %}
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section_id }}-padding {
+      {% if settings.padding_vertical_sections != padding_top %}  
+        padding-top: {{ padding_top }}px !important;
+      {% endif %}
+      {% if settings.padding_vertical_sections != padding_bottom %}
+        padding-bottom: {{ padding_bottom }}px !important;
+      {% endif %}
+    }
+  }
+{%- endstyle -%}
+{% endif %}

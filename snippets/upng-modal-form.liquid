@@ -1,0 +1,68 @@
+{% comment %}
+  modal form
+
+  It needs to be oppened by a modal-opener. Sample:
+
+  <modal-opener class="no-js-hidden" data-modal="{{ form_id }}">
+    <button class="button button--full-width button--secondary">{{ 'upango.product.ver_precio_profesional' | t }}</button>
+  </modal-opener>
+
+  Accepts:
+  - form_id: {String} Form id. Use same value as the data-modal attribute from the modal-opener element.
+  - form_type: {String} Form type. Values are "alta","upng-matriz-variantes"
+  - form_product: {Product} Product to ask price for in form_type "product-consultar-precios"
+  - form_size: {String}, acepta: "large", hace el modal más grande.
+
+  Usage:
+  {% render 'upng-modal-form', form_id: 'PopupModalForm', form_type: 'alta' %}
+{% endcomment %}
+{{ 'upango-modal.css' | asset_url | stylesheet_tag }}
+{{ 'upango-modal-form.css' | asset_url | stylesheet_tag }}
+
+{% comment %} {% assign form_type = "" %}
+{% if customer %}
+  {% assign form_type = "pedido_rapido" %}
+  
+{%  else  %}
+  {% assign form_type = "alta" %}
+{% endif %} {% endcomment %}
+
+<modal-dialog id="{{ form_id }}" class="upng-popup-modal">
+  <div
+    role="dialog"
+    aria-label="{{ form_type }}"
+    aria-modal="true"
+    class="upng-popup-modal__content {% if form_size == "large" %}upng-popup-modal-large{% endif %} {% if form_size == "medium" %}upng-popup-modal-medium{% endif %}"
+    tabindex="-1"
+  >
+    <button
+      id="ModalClose-{{ form_id }}"
+      type="button"
+      class="upng-popup-modal__toggle"
+      aria-label="{{ 'accessibility.close' | t }}"
+    >
+      {% render 'icon-close' %}
+    </button>
+    <div class="upng-popup-modal__content-info">
+      {%- if form_type == 'alta' %}
+        {% render 'upng-alta-form' %}
+      {%- elsif form_type == 'pedido_rapido' %}
+        {% render 'upng-matriz-variantes', block: block, product: form_product %}
+      {%- endif -%}
+      {%- if form_type == 'compare_modal' %}
+        {% render 'upng-compare-modal' %}
+      {% endif %}
+      {% if form_type == 'agente_cart_modal' %}
+        {% render 'upng-agentes-cestas' %}
+      {% endif %}
+      {% if 'empty' %}
+        <div class="modal-empty-container"></div>
+      {% endif %}
+      {% comment %}
+        <button type="button" class="link button-label pt-2" id="ModalClose-{{ form_id }}">
+          {{ 'upango.alta-form.close' | t }}
+        </button>
+      {% endcomment %}
+    </div>
+  </div>
+</modal-dialog>

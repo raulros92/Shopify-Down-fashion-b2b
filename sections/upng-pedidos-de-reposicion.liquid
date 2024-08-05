@@ -1,0 +1,184 @@
+{{ 'section-upng-myaccount-tables.css' | asset_url | stylesheet_tag }}
+{{ 'upng-alert.css' | asset_url | stylesheet_tag }}
+{{ 'upng-tag.css' | asset_url | stylesheet_tag }}
+
+{% assign pedidos_reposicion = customer.current_company.metafields.upng.pedidos_de_reposicion.value %}
+{% if pedidos_reposicion %}
+  <p class="center">Aquí tienes recopilados todos tus últimos pedidos para que te sea más fácil hacer la reposición.</p>
+
+  <div class="upng-pedidosreposicion upng-table-micuenta">
+    <table id="upng-pedidosreposicion" class="upng-posventa-table">
+      <thead>
+        <tr>
+          <th>{{ 'upango.pedidos-de-reposicion.headers.nombre' | t }}</th>
+          <th>{{ 'upango.pedidos-de-reposicion.headers.referencia' | t }}</th>
+          <th>{{ 'upango.pedidos-de-reposicion.headers.disponibilidad' | t }}</th>
+          <th class="select-cantidad">{{ 'upango.pedidos-de-reposicion.headers.formatos' | t }}</th>
+          <th>{{ 'upango.pedidos-de-reposicion.headers.cantidad' | t }}</th>
+          <th>{{ 'upango.pedidos-de-reposicion.headers.precio' | t }}</th>
+          <th>{{ 'upango.pedidos-de-reposicion.headers.total' | t }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in pedidos_reposicion %}
+          <tr>
+            {% # NOMBRE + IMAGEN %}
+            <td class="cell-image">
+              <span class="upng-thead-mobile"> {{ 'upango.pedidos-de-reposicion.headers.nombre' | t }}</span>
+              <img
+                class="upng-imagen-desktop"
+                src="{{ product.featured_image | image_url: width: 50, height: 50 }}"
+                width="50"
+                height="50"
+                loading="eager"
+              >
+
+              <a href="{{ product.url }}">{{ product.title }}</a>
+            </td>
+            {% # REFERENCIA %}
+            <td>
+              <span class="upng-thead-mobile"> {{ 'upango.pedidos-de-reposicion.headers.referencia' | t }} </span>
+              <span>{{ product.metafields.upng.referencia }}</span>
+            </td>
+            {% # DISPONIBILDAD %}
+            <td>
+              <span class="upng-thead-mobile"> {{ 'upango.pedidos-de-reposicion.headers.disponibilidad' | t }} </span>
+              {% for variant in product.variants %}
+                <div
+                  id="stock-{{ variant.id }}"
+                  class="variant-stock-{{ product.id }}"
+                  {%- if forloop.first -%}
+                    style="display:block;"
+                  {%- else %}
+                    style="display:none;"
+                  {%- endif -%}
+                >
+                  <span>
+                    {% render 'upng-product-stock',
+                      variant: variant,
+                      show_inventory_quantity: false,
+                      short_text: true
+                    %}
+                  </span>
+                </div>
+              {% endfor %}
+            </td>
+            {% # FORMATOS %}
+            <td class="select-cantidad">
+              <span class="upng-thead-mobile"> {{ 'upango.pedidos-de-reposicion.headers.formatos' | t }} </span>
+              <div class="cell-variantes flex">
+                {% for variant in product.variants %}
+                  <fieldset class="js product-form__input">
+                    <input
+                      type="radio"
+                      id="variant-{{ variant.id }}"
+                      name="variant-options-{{ product.id }}"
+                      data-productid="{{ product.id }}"
+                      class="variant-selector"
+                      value="{{ variant.id }}"
+                      {%- if forloop.first -%}
+                        checked
+                      {%- endif -%}
+                    >
+                    {% for option_value in variant.options %}
+                      <label class="form__label" for="variant-{{ variant.id }}">{{ option_value }}</label>
+                    {% endfor %}
+                  </fieldset>
+                {% endfor %}
+              </div>
+              {%- comment -%}
+                <select >
+                  {% for variant in product.variants %}
+                    <option value="opcion"> opcion 1</option>
+                  {% endfor %}
+                </select>
+              {%- endcomment -%}
+            </td>
+            {% # CANTIDAD %}
+            <td class="select-cantidad">
+              <span class="upng-thead-mobile"> {{ 'upango.pedidos-de-reposicion.headers.cantidad' | t }} </span>
+              <quantity-input class="quantity">
+                <button class="quantity__button no-js-hidden" name="minus" type="button">
+                  <span class="visually-hidden">
+                    {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                  </span>
+                  {% render 'icon-minus' %}
+                </button>
+                <input
+                  class="quantity__input"
+                  type="number"
+                  name="quantity"
+                  data-productid="{{ product.id }}"
+                  id="quantity-{{ product.id }}"
+                  min="1"
+                  value="1"
+                >
+                <button class="quantity__button no-js-hidden" name="plus" type="button">
+                  <span class="visually-hidden">
+                    {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                  </span>
+                  {% render 'icon-plus' %}
+                </button>
+              </quantity-input>
+            </td>
+            {% # PRECIO %}
+            <td>
+              <span class="upng-thead-mobile"> {{ 'upango.pedidos-de-reposicion.headers.precio' | t }} </span>
+              {% for variant in product.variants %}
+                {% assign variant_price_per_unit = variant.price | divided_by: variant.weight_in_unit | times: 1 %}
+
+                <span
+                  id="price-{{ variant.id }}"
+                  data-price="{{ variant.price }}"
+                  class="price upng-price price-{{ product.id }}"
+                  {%- if forloop.first -%}
+                    style="display:block;"
+                  {%- else %}
+                    style="display:none;"
+                  {%- endif -%}
+                >
+                  {{ variant_price_per_unit | money }}
+                </span>
+              {% endfor %}
+            </td>
+            {% # TOTAL %}
+            <td>
+              <span class="upng-thead-mobile"> {{ 'upango.pedidos-de-reposicion.headers.total' | t }} </span>
+              <span id="total-{{ product.id }}">{{ product.variants[0].price | money }}</span>
+            </td>
+            <td class="upng-button-primary">
+              <button
+                class="add-variant-to-basket button button--primary"
+                data-productid="{{ product.id }}"
+              >
+                <span>{{ 'upango.pedidos-de-reposicion.buttons.comprar' | t }}</span>{% render 'loading' %}
+              </button>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  {{ 'upango.pedidos-de-reposicion.messages.no-pedidos' | t }}
+{% endif %}
+
+<script src="{{ 'upango-pedidos-de-reposicion.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "UPNG-PedidosDeReposicion",
+  "tag": "section",
+  "class": "pedidos-reposicion page-width",
+  "limit": 1,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "presets": [
+    {
+      "name": "UPNG Pedidos de reposición"
+    }
+  ]
+}
+{% endschema %}

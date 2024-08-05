@@ -1,0 +1,183 @@
+<div class="upng-modal-header">
+  {%- comment -%}
+    LOGO
+      | Si ha introducido el logo de la tienda muestramelo
+      | si no lo has intruducido muestrame el nombre de la tienda
+  {%- endcomment -%}
+  <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
+    {%- if settings.logo != blank -%}
+      <div class="header__heading-logo-wrapper">
+        {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+        {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
+        {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
+        {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+        {{
+          settings.logo
+          | image_url: width: 600
+          | image_tag:
+            class: 'header__heading-logo motion-reduce',
+            widths: widths,
+            height: logo_height,
+            width: settings.logo_width,
+            alt: logo_alt,
+            sizes: sizes,
+            preload: true
+        }}
+      </div>
+    {%- else -%}
+      <span class="h2">{{ shop.name }}</span>
+    {%- endif -%}
+  </a>
+  <p>{{ 'upango.alta-form.title' | t }}</p>
+</div>
+{%- form 'contact', id: 'AltaForm', class: 'alta-form upng-form' -%}
+  {% # < form class="alta-form upng-form"> %}
+  <input type="hidden" name="upng-form-type" value="alta">
+  <div class="upng-fields">
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        required="required"
+        autocomplete="name"
+        id="AltaForm-name"
+        name="name"
+        placeholder="{{ 'upango.alta-form.name' | t }}"
+      >
+      <label class="field__label" for="AltaForm-name">
+        {{- 'upango.alta-form.name' | t -}}
+        <span aria-hidden="true">*</span></label
+      >
+    </div>
+    <div class="field">
+      <input
+        autocomplete="email"
+        type="email"
+        required="required"
+        id="AltaForm-email"
+        class="field__input"
+        name="contact[email]"
+        spellcheck="false"
+        autocapitalize="off"
+        placeholder="{{ 'upango.alta-form.email' | t }}"
+      >
+      <label class="field__label" for="AltaForm-email">
+        {{- 'upango.alta-form.email' | t -}}
+        <span aria-hidden="true">*</span></label
+      >
+    </div>
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        required="required"
+        autocomplete="phone"
+        id="AltaForm-phone"
+        name="contact[phone]"
+        placeholder="{{ 'upango.alta-form.phone' | t }}"
+      >
+      <label class="field__label" for="AltaForm-phone">
+        {{- 'upango.alta-form.phone' | t -}}
+        <span aria-hidden="true">*</span>
+      </label>
+    </div>
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        autocomplete="company"
+        id="AltaForm-company"
+        name="contact[company]"
+        placeholder="{{ 'upango.alta-form.company' | t }}"
+      >
+      <label class="field__label" for="AltaForm-company">
+        {{- 'upango.alta-form.company' | t -}}
+      </label>
+    </div>
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        autocomplete="fiscal-address"
+        id="AltaForm-fiscal-address"
+        name="contact[fiscal-address]"
+        placeholder="{{ 'upango.alta-form.fiscal-address' | t }}"
+      >
+      <label class="field__label" for="AltaForm-fiscal-address">
+        {{- 'upango.alta-form.fiscal-address' | t -}}
+      </label>
+    </div>
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        autocomplete="postal-code"
+        id="AltaForm-postal-code"
+        name="contact[postal-code]"
+        placeholder="{{ 'upango.alta-form.postal-code' | t }}"
+      >
+      <label class="field__label" for="AltaForm-postal-code">
+        {{- 'upango.alta-form.postal-code' | t -}}
+      </label>
+    </div>
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        autocomplete="city"
+        id="AltaForm-city"
+        name="contact[city]"
+        placeholder="{{ 'upango.alta-form.city' | t }}"
+      >
+      <label class="field__label" for="AltaForm-city">
+        {{- 'upango.alta-form.city' | t -}}
+      </label>
+    </div>
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        autocomplete="state"
+        id="AltaForm-state"
+        name="contact[state]"
+        placeholder="{{ 'upango.alta-form.state' | t }}"
+      >
+      <label class="field__label" for="AltaForm-state">
+        {{- 'upango.alta-form.state' | t -}}
+      </label>
+    </div>
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        autocomplete="vat-number"
+        id="AltaForm-vat-number"
+        name="contact[vat-number]"
+        placeholder="{{ 'upango.alta-form.vat-number' | t }}"
+      >
+      <label class="field__label" for="AltaForm-vat-number">
+        {{- 'upango.alta-form.vat-number' | t -}}
+      </label>
+    </div>
+    <div class="field">
+      <input
+        class="field__input"
+        type="text"
+        autocomplete="contact-person"
+        id="AltaForm-contact-person"
+        name="contact[contact-person]"
+        placeholder="{{ 'upango.alta-form.contact-person' | t }}"
+      >
+      <label class="field__label" for="AltaForm-contact-person">
+        {{- 'upango.alta-form.contact-person' | t -}}
+      </label>
+    </div>
+    <input type="text" name="contact[body]" value="FORMULARIO DE SOLICITUD DE ALTA" style="display:none;">
+  </div>
+  <br>
+  <div>
+    <button type="submit" class="button button--full-width button--primary">
+      {{ 'upango.alta-form.send' | t }}
+    </button>
+  </div>
+{%- endform -%}

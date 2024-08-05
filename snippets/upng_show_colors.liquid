@@ -1,0 +1,70 @@
+{% assign attribute_values = '' %}
+{% for option in card_product.options %}
+  {% if option == 'Color' %}
+    {% assign attribute_values = card_product.options_by_name.Color.values %}
+  {% endif %}
+{% endfor %}
+{% assign last_image = '' %}
+<div class="btn-colors {% if show_sku == false %} btn-colors-margin {% endif %}">
+  {% for variant in card_product.variants %}
+    {% for option in attribute_values %}
+      {% if variant.option1 == option or variant.option2 == option or variant.option3 == option %}
+        {% assign varImg = variant.image | image_url: width: '720px' %}
+        {% if varImg == last_image %}
+          {% break %}
+        {% endif %}
+        {% assign last_image = varImg %}
+        <div>
+          <button
+            type="button"
+            class="variant-image-btn"
+            image-data="{{ last_image }}"
+            data-sku="{{variant.sku}}"
+            style="background-color: {{ shop.metaobjects['Colors'][option].color }};"
+          ></button>
+        </div>
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+</div>
+
+<style>
+  .variant-image-btn {
+    cursor: pointer;
+    height: 2em;
+    width: 2em;
+    border: 1px solid black; /* Estilo del botón normal */
+  }
+
+  .variant-image-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .variant-image-selected {
+    border: 3px solid black !important; /* Estilo del botón seleccionado */
+  }
+
+  .variant-options-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+  }
+ 
+  .btn-colors {
+    display: flex;
+    z-index: 1;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .btn-colors-margin {
+    padding: 1em;
+  }
+
+</style>
+
+<script src="{{ 'upng-variants-colors.js' | asset_url }}" defer></script>

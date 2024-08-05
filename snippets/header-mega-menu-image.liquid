@@ -1,0 +1,319 @@
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+{{ 'section-upng-multicolumn-banners.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign columns_mobile_int = section.settings.columns_mobile | plus: 0
+  assign show_mobile_slider = false
+  if section.settings.swipe_on_mobile and section.blocks.size > columns_mobile_int
+    assign show_mobile_slider = true
+  endif
+-%}
+
+<div
+  id="MegaMenu-Content-{{ forloop.index }}"
+  class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup upng-menu-image"
+  tabindex="-1"
+  style="opacity: 1; transform: translateY(0);"
+>
+  <div class="page-width slider-mobile-gutter upng-multicolum">
+    <ul
+      class="multicolumn-list contains-content-container grid grid--1-col-tablet-down grid--{{ block.settings.columns_desktop_menuimage }}-col-desktop{% if show_mobile_slider %} slider slider--mobile grid--peek{% endif %}"
+      id="Slider-{{ section.id }}"
+      role="list"
+      style="justify-content: center;"
+    >
+      {%- liquid
+        assign highest_ratio = 0
+        for block in section.blocks
+          if block.settings.image.aspect_ratio > highest_ratio
+            assign highest_ratio = block.settings.image.aspect_ratio
+          endif
+        endfor
+      -%}
+      {%- comment -%} BANNER 1 {%- endcomment -%}
+      {%- if block.settings.show_image_1 -%}
+        <li class="multicolumn-list__item grid__item {{ empty_column }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          <div class="multicolumn-card content-container">
+            {%- if block.settings.image_1 != blank -%}
+              <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width multicolumn-card-spacing">
+                {%- comment -%} imagen {%- endcomment -%}
+                <div
+                  class="media media--transparent media--adapt"
+                >
+                  {%- liquid
+                    assign number_of_columns = block.settings.columns_desktop_menuimage
+                    assign grid_space_desktop = number_of_columns | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                    if section.settings.image_width == 'half'
+                      assign image_width = 0.5
+                    elsif section.settings.image_width == 'third'
+                      assign image_width = 0.33
+                    else
+                      assign image_width = 1
+                    endif
+                  -%}
+
+                  {% capture sizes %}
+                              (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                              (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }})
+                            {% endcapture %}
+
+                  {{
+                    block.settings.image_1
+                    | image_url: width: 3200
+                    | image_tag:
+                      sizes: sizes,
+                      widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                      class: 'multicolumn-card__image'
+                  }}
+                </div>
+            {%- else -%}
+              <div
+                class="media media--transparent media--adapt"
+              >
+                {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            {%- endif -%}
+
+            {%- comment -%}texto {%- endcomment -%}
+            {%- if block.settings.text_image_1 != blank -%}
+              <p class="product__text inline-richtext {{ block.settings.text_style_menuimage }} ">
+                {{ block.settings.text_image_1 | escape }}
+              </p>
+            {%- endif -%}
+
+            {%- comment -%}boton {%- endcomment -%}
+            {%- if block.settings.button_label_image_1 != blank -%}
+              <a
+                class="{% if block.settings.button_style_menuimage == 'link' %}link underlined-link{% elsif block.settings.button_style_menuimage == 'solid' %}button{% else %}button button--secondary{% endif %}"
+                {% if block.settings.link_button_image_1 == blank %}
+                  role="link" aria-disabled="true"
+                {% else %}
+                  href="{{ block.settings.link_button_image_1 }}"
+                {% endif %}
+              >
+                {{ block.settings.button_label_image_1 | escape }}
+              </a>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} BANNER 2 {%- endcomment -%}
+      {%- if block.settings.show_image_2 -%}
+        <li class="multicolumn-list__item grid__item {{ empty_column }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          <div class="multicolumn-card content-container">
+            {%- if block.settings.image_2 != blank -%}
+              <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width multicolumn-card-spacing">
+                {%- comment -%} imagen {%- endcomment -%}
+                <div
+                  class="media media--transparent media--adapt"
+                >
+                  {%- liquid
+                    assign number_of_columns = block.settings.columns_desktop_menuimage
+                    assign grid_space_desktop = number_of_columns | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                    if section.settings.image_width == 'half'
+                      assign image_width = 0.5
+                    elsif section.settings.image_width == 'third'
+                      assign image_width = 0.33
+                    else
+                      assign image_width = 1
+                    endif
+                  -%}
+
+                  {% capture sizes %}
+                                (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                                (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }})
+                              {% endcapture %}
+
+                  {{
+                    block.settings.image_2
+                    | image_url: width: 3200
+                    | image_tag:
+                      sizes: sizes,
+                      widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                      class: 'multicolumn-card__image'
+                  }}
+                </div>
+            {%- else -%}
+              <div
+                class="media media--transparent media--adapt"
+              >
+                {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            {%- endif -%}
+
+            {%- comment -%}texto {%- endcomment -%}
+            {%- if block.settings.text_image_2 != blank -%}
+              <p class="product__text inline-richtext {{ block.settings.text_style_menuimage }} ">
+                {{ block.settings.text_image_2 | escape }}
+              </p>
+            {%- endif -%}
+
+            {%- comment -%}boton {%- endcomment -%}
+            {%- if block.settings.button_label_image_2 != blank -%}
+              <a
+                class="{% if block.settings.button_style_menuimage == 'link' %}link underlined-link{% elsif block.settings.button_style_menuimage == 'solid' %}button{% else %}button button--secondary{% endif %}"
+                {% if block.settings.link_button_image_2 == blank %}
+                  role="link" aria-disabled="true"
+                {% else %}
+                  href="{{ block.settings.link_button_image_2 }}"
+                {% endif %}
+              >
+                {{ block.settings.button_label_image_2 | escape }}
+              </a>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} BANNER 3 {%- endcomment -%}
+      {%- if block.settings.show_image_3 -%}
+        <li class="multicolumn-list__item grid__item {{ empty_column }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          <div class="multicolumn-card content-container">
+            {%- if block.settings.image_3 != blank -%}
+              <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width multicolumn-card-spacing">
+                {%- comment -%} imagen {%- endcomment -%}
+                <div
+                  class="media media--transparent media--adapt"
+                >
+                  {%- liquid
+                    assign number_of_columns = block.settings.columns_desktop_menuimage
+                    assign grid_space_desktop = number_of_columns | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                    if section.settings.image_width == 'half'
+                      assign image_width = 0.5
+                    elsif section.settings.image_width == 'third'
+                      assign image_width = 0.33
+                    else
+                      assign image_width = 1
+                    endif
+                  -%}
+
+                  {% capture sizes %}
+                           (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                           (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }})
+                         {% endcapture %}
+
+                  {{
+                    block.settings.image_3
+                    | image_url: width: 3200
+                    | image_tag:
+                      sizes: sizes,
+                      widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                      class: 'multicolumn-card__image'
+                  }}
+                </div>
+            {%- else -%}
+              <div
+                class="media media--transparent media--adapt"
+              >
+                {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            {%- endif -%}
+
+            {%- comment -%}texto {%- endcomment -%}
+            {%- if block.settings.text_image_3 != blank -%}
+              <p class="product__text inline-richtext {{ block.settings.text_style_menuimage }} ">
+                {{ block.settings.text_image_3 | escape }}
+              </p>
+            {%- endif -%}
+
+            {%- comment -%}boton {%- endcomment -%}
+            {%- if block.settings.button_label_image_3 != blank -%}
+              <a
+                class="{% if block.settings.button_style_menuimage == 'link' %}link underlined-link{% elsif block.settings.button_style_menuimage == 'solid' %}button{% else %}button button--secondary{% endif %}"
+                {% if block.settings.link_button_image_3 == blank %}
+                  role="link" aria-disabled="true"
+                {% else %}
+                  href="{{ block.settings.link_button_image_3 }}"
+                {% endif %}
+              >
+                {{ block.settings.button_label_image_3 | escape }}
+              </a>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endif -%}
+      {%- comment -%} BANNER 4 {%- endcomment -%}
+      {%- if block.settings.show_image_4 -%}
+        <li class="multicolumn-list__item grid__item {{ empty_column }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          <div class="multicolumn-card content-container">
+            {%- if block.settings.image_4 != blank -%}
+              <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width multicolumn-card-spacing">
+                {%- comment -%} imagen {%- endcomment -%}
+                <div
+                  class="media media--transparent media--adapt"
+                >
+                  {%- liquid
+                    assign number_of_columns = block.settings.columns_desktop_menuimage
+                    assign grid_space_desktop = number_of_columns | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                    if section.settings.image_width == 'half'
+                      assign image_width = 0.5
+                    elsif section.settings.image_width == 'third'
+                      assign image_width = 0.33
+                    else
+                      assign image_width = 1
+                    endif
+                  -%}
+
+                  {% capture sizes %}
+                           (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                           (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }})
+                         {% endcapture %}
+
+                  {{
+                    block.settings.image_4
+                    | image_url: width: 3200
+                    | image_tag:
+                      sizes: sizes,
+                      widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                      class: 'multicolumn-card__image'
+                  }}
+                </div>
+            {%- else -%}
+              <div
+                class="media media--transparent media--adapt"
+              >
+                {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            {%- endif -%}
+
+            {%- comment -%}texto {%- endcomment -%}
+            {%- if block.settings.text_image_4 != blank -%}
+              <p class="product__text inline-richtext {{ block.settings.text_style_menuimage }} ">
+                {{ block.settings.text_image_4 | escape }}
+              </p>
+            {%- endif -%}
+
+            {%- comment -%}boton {%- endcomment -%}
+            {%- if block.settings.button_label_image_4 != blank -%}
+              <a
+                class="{% if block.settings.button_style_menuimage == 'link' %}link underlined-link{% elsif block.settings.button_style_menuimage == 'solid' %}button{% else %}button button--secondary{% endif %}"
+                {% if block.settings.link_button_image_4 == blank %}
+                  role="link" aria-disabled="true"
+                {% else %}
+                  href="{{ block.settings.link_button_image_4 }}"
+                {% endif %}
+              >
+                {{ block.settings.button_label_image_4 | escape }}
+              </a>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endif -%}
+    </ul>
+  </div>
+</div>

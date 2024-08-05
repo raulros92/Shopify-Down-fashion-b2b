@@ -1,0 +1,56 @@
+{{ 'upng-hot-spots.css' | asset_url | stylesheet_tag }}
+
+{% assign product = block.settings.hotspot_product %}
+<a
+  {% if product != null %}
+    href="{{ product.url }}"
+  {% else %}
+    href="#"
+  {% endif %}
+>
+  <div
+    class="hotspot-container"
+    style="left: {{ block.settings.desktop_horizontal_pos }}%; top: {{ block.settings.desktop_vertical_pos }}%; "
+  >
+    <div
+      class="hotspot color-{{ section.settings.color_scheme }}"
+      style="width: {{ block.settings.desktop_size }}em; height: {{ block.settings.desktop_size }}em"
+    >
+      <span style="font-size: {{ block.settings.icon_size }}em;">+</span>
+    </div>
+    <div class="hotspot-content color-{{ section.settings.color_scheme }}" style="display: none; max-width: 40em;">
+      <h2>{{ block.settings.hotspot_title }}</h2>
+      <p>{{ block.settings.hotspot_desc }}</p>
+      {% if product != null and block.settings.hotspot_show_product == 'true' %}
+        <img src="{{ product.featured_image | image_url: width: 240, height: 240 }}" width="240" height="240" loading="eager" alt="">
+      {% endif %}
+    </div>
+  </div>
+</a>
+<div
+  class="hotspot-container-mobile"
+  style="left: {{ block.settings.mobile_horizontal_pos }}%; top: {{ block.settings.mobile_vertical_pos }}%; "
+>
+  <div
+    class="hotspot color-{{ section.settings.color_scheme }}"
+    style="width: {{ block.settings.mobile_size }}em; height: {{ block.settings.mobile_size }}em"
+  >
+    <span style="font-size: {{ block.settings.mobile_icon_size }}em;">+</span>
+  </div>
+  <div
+    class="hotspot-content color-{{ section.settings.color_scheme }}"
+    {% if product != null %}
+      id="{{ product.handle }}"
+    {% endif %}
+    style="display: none; max-width: 40em;"
+  >
+    <h2>{{ block.settings.hotspot_title }}</h2>
+    <p>{{ block.settings.hotspot_desc }}</p>
+    {% if product != null and block.settings.hotspot_show_product_mobile == 'true' %}
+      <a href="{{ product.url }}">
+        <img src="{{ product.featured_image | image_url: width: 144, height: 144 }}" width= "144" height="144" loading="eager" alt="">
+      </a>
+    {% endif %}
+  </div>
+</div>
+<script src="{{ 'upng-hot-spots.js' | asset_url }}" defer="defer"></script>

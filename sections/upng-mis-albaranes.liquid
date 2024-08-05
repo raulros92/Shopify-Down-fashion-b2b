@@ -1,0 +1,147 @@
+{{ 'section-upng-myaccount-tables.css' | asset_url | stylesheet_tag }}
+
+{% # filtros %}
+<div class="upng-filtros upng-form flex flex-wrap justify-content-around center">
+  <form class="posventa-form" id="posventa-albaranes-form" method="post">
+    <input type="hidden" name="companyId" value="{{ customer.current_company.id }}">
+    <div class="upng-fields">
+      <div class="field">
+        <input
+          class="field__input"
+          type="text"
+          autocomplete="numeroPedido"
+          id="numeroPedido"
+          name="numeroPedido"
+          spellcheck="false"
+          placeholder="{{ 'upango.posventa.albaranes.numero_de_pedido' | t }}"
+        >
+        <label class="field__label" for="numeroPedido">{{ 'upango.posventa.albaranes.numero_de_pedido' | t }}</label>
+      </div>
+      <div class="field">
+        <input
+          class="field__input"
+          type="text"
+          autocomplete="numeroAlbaran"
+          id="numeroAlbaran"
+          name="numeroAlbaran"
+          spellcheck="false"
+          placeholder="{{ 'upango.posventa.albaranes.referencia_erp' | t }}"
+        >
+        <label class="field__label" for="numeroAlbaran">{{ 'upango.posventa.albaranes.referencia_erp' | t }}</label>
+      </div>
+      <div class="field">
+        <input
+          autocomplete="fechaDesde"
+          type="date"
+          id="fechaDesde"
+          class="field__input"
+          name="fechaDesde"
+          spellcheck="false"
+          autocapitalize="off"
+          placeholder="{{ 'upango.posventa.albaranes.fecha_desde' | t }}"
+        >
+        {%- comment -%} <label class="field__label" for="fechaDesde">{{ 'upango.posventa.albaranes.fecha_desde' | t }}</label>{%- endcomment -%}
+      </div>
+      <div class="field">
+        <input
+          class="field__input"
+          type="date"
+          autocomplete="fechaHasta"
+          id="fechaHasta"
+          name="fechaHasta"
+          placeholder="{{ 'upango.posventa.albaranes.fecha_hasta' | t }}"
+        >
+        {%- comment -%}<label class="field__label" for="fechaHasta">{{ 'upango.posventa.albaranes.fecha_hasta' | t }}</label>{%- endcomment -%}
+      </div>
+      {% # TODO: Traducciones estados %}
+      <div class="field">
+        <select
+          class="select__select"
+          name="estado"
+        >
+          <option value="">{{ 'upango.posventa.albaranes.estado' | t }}</option>
+          <option value="FACTURADO">{{ 'upango.posventa.albaranes.estado_facturado' | t }}</option>
+          <option value="SIN FACTURAR">{{ 'upango.posventa.albaranes.estado_sin_facturar' | t }}</option>
+        </select>
+        <label class="field__label" for="estado"></label>
+      </div>
+
+      <button type="submit" class="button button--full-width button--primary">
+        <span>{{ 'upango.posventa.albaranes.buscar' | t }}</span>{% render 'loading' %}
+      </button>
+    </div>
+  </form>
+</div>
+
+{% # resultados %}
+<div id="posventa-results">
+  <p class="pt-3">
+    {{ 'upango.posventa.albaranes.resultados_begin' | t }}
+    <span id="numero-resultados-consulta-posventa">0</span> {{ 'upango.posventa.albaranes.resultados_end' | t }}
+  </p>
+
+  {% # inicio div tabla %}
+  <div class="upng-table-micuenta">
+    <table id="albaranes-table">
+      <thead>
+        <tr>
+          {% # < th >{{ 'upango.posventa.albaranes.serie' | t }} </th > %}
+          <th>{{ 'upango.posventa.albaranes.numero' | t }}</th>
+          <th>{{ 'upango.posventa.albaranes.fecha' | t }}</th>
+          <th>{{ 'upango.posventa.albaranes.agencia' | t }}</th>
+          <th>{{ 'upango.posventa.albaranes.estado' | t }}</th>
+          <th>{{ 'upango.posventa.albaranes.numero_seguimiento' | t }}</th>
+          <th>{{ 'upango.posventa.albaranes.total' | t }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+{% # fin div tabla %}
+
+{% render 'upng-posventa-modal', modal_id: 'DetalleAlbaranModal', posventa_type: 'albaranes' %}
+
+<script>
+  {% # Deben estar todos los posibles codigos de error devuelvos por el desarrollo de posventa %}
+  const errorMessages = {
+    no_data: "{{ 'upango.posventa.codigos-error.no_data' | t }}",
+    error_general: "{{ 'upango.posventa.codigos-error.no_data' | t }}",
+    error_company_id_no_recuperado_de_shopify: "{{ 'upango.posventa.codigos-error.error_company_id_no_recuperado_de_shopify' | t }}",
+    error_datos_no_recibidos_de_form: "{{ 'upango.posventa.codigos-error.error_datos_no_recibidos_de_form' | t }}"
+  };
+  const theadTitles = {
+    serie:"{{ 'upango.posventa.albaranes.serie' | t }}",
+    numero:"{{ 'upango.posventa.albaranes.numero' | t }}",
+    fecha:"{{ 'upango.posventa.albaranes.fecha' | t }}",
+    agencia:"{{ 'upango.posventa.albaranes.agencia' | t }}",
+    estado:"{{ 'upango.posventa.albaranes.estado' | t }}",
+    numeroSeguimiento:"{{ 'upango.posventa.albaranes.numero_seguimiento' | t }}",
+    total:"{{ 'upango.posventa.albaranes.total' | t }}"
+  };
+
+  const verDetalleText = "{{ 'upango.posventa.ver_detalle' | t }}";
+</script>
+<script src="{{ 'upango-posventa-albaranes.js' | asset_url }}" defer></script>
+<script src="{{ 'upango-posventa-commons.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "UPNG-misalbaranes",
+  "tag": "section",
+  "class": "section-misalbaranes page-width",
+  "limit": 1,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "presets": [
+    {
+      "name": "UPNG mis albaranes"
+    }
+  ]
+}
+{% endschema %}

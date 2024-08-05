@@ -1,0 +1,266 @@
+{% comment %} 
+  Este snipppet es necesario para que se pase la información necesaria para los filtros y el buscador.
+
+    Accepts: 
+
+    - products: {Object Product list} Product.
+    - enable_quick_add: {Boolean} Enable/Disable the quick add button.
+    - show_parrilla: {Boolean} Mostrar vista parrilla al cargar
+    Usage:
+    {% render 'upng-vista-parrilla' products: products: collection.products %} 
+{% endcomment %}
+
+{{ 'section-upng-myaccount-tables.css' | asset_url | stylesheet_tag }}
+{{ 'section-upng-listproduct-tables.css' | asset_url | stylesheet_tag }}
+
+{% assign array_productos = products %}
+
+{% if array_productos.size > 0 %}
+
+  {% assign numProductos = 1 %}
+  {% assign datosTabla = "" %}
+
+
+  {% capture tableRow %}
+    <tr>
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when "parrilla-foto" %}
+          <th {% if section.settings.parrilla-ocultar-header-tabla == true %}class="hidden"{% endif %}>{{ 'upango.vista-parrilla.tabla.foto' | t }}</th>
+        {% when "parrilla-nombre" %}
+          <th {% if section.settings.parrilla-ocultar-header-tabla == true %}class="hidden"{% endif %}>{{ 'upango.vista-parrilla.tabla.nombre' | t }}</th>
+        {% when "parrilla-descripcion" %}
+          <th {% if section.settings.parrilla-ocultar-header-tabla == true %}class="hidden"{% endif %}>{{ 'upango.vista-parrilla.tabla.descripcion' | t }}</th>
+          {% when 'parrilla-favorito' %}
+          <th {% if section.settings.parrilla-ocultar-header-tabla == true %}class="hidden"{% endif %}>{{ 'upango.vista-parrilla.tabla.favorito' | t }}</th>
+        {% when "parrilla-vendedor" %}
+          <th {% if section.settings.parrilla-ocultar-header-tabla == true %}class="hidden"{% endif %}>{{ 'upango.vista-parrilla.tabla.vendedor' | t }}</th>
+        {% when "parrilla-precio" %}
+          {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+            <th class="upng-price price{% if section.settings.parrilla-ocultar-header-tabla == true %} hidden{% endif %}">{{ 'upango.vista-parrilla.tabla.precio' | t }}</th>
+          {% endif %}
+        {% when "parrilla-stock" %}
+          {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+            <th {% if section.settings.parrilla-ocultar-header-tabla == true %}class="hidden"{% endif %}>{{ 'upango.vista-parrilla.tabla.stock' | t }}</th>
+          {% endif %}
+        {% when "parrilla-botones" %}
+          {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+            <th {% if section.settings.parrilla-ocultar-header-tabla == true %}class="hidden"{% endif %}>{{ 'upango.vista-parrilla.tabla.compra' | t }}</th>
+          {% endif %}
+      {% endcase %}
+    {% endfor %}
+    </tr>
+
+    {% for product in array_productos %}
+    <tr>
+      {% assign product_qty = 0 %}
+      {% assign product_url = routes.root_url | append: 'products/' | append: product.handle %}
+
+      {% for variant in product.variants %}
+        {% if variant.inventory_quantity > 0 %}
+          {% assign product_qty = product_qty | plus: variant.inventory_quantity %}
+        {% endif %}
+      {% endfor %}
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when "parrilla-foto" %}
+          {% comment %} Foto {% endcomment %}
+            <td class="upng-ir-al-producto">
+              <a href="{{ product_url }}">
+                {% if product.featured_image != blank %}
+                  {{ product.featured_image | image_url: width: 100 | image_tag }}
+                {% else %}
+                {% comment %}
+                    Si el producto no tiene featured_image aquí estará.
+                {% endcomment %}
+                {% endif %}
+              </a>
+            </td>
+          {% when 'parrilla-favorito' %}
+            <td>
+              {% render 'upng-fav-button', block: block, fav_product: product %}
+            </td>
+          {% when "parrilla-nombre" %}
+          {% comment %} Nombre {% endcomment %}
+            <td>{{ product.title }}</td>
+          {% when "parrilla-descripcion" %}
+            {% comment %} Descripcion {% endcomment %}
+            {% if product.description == blank %}
+              <td></td>
+            {% else %}
+              <td>{{ product.description }}</td>
+            {% endif %}
+          {% when "parrilla-vendedor" %}
+            {% comment %} vendedor {% endcomment %}
+            <td>{{ product.vendor }}</td>
+          {% when "parrilla-precio" %}
+            {% comment %} Ocultar precios para customer no b2b o mostrar. {% endcomment %}
+            {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+              {% comment %} precio {% endcomment %}
+              {%- if product.quantity_price_breaks_configured? -%}
+                <td class="upng-price price">
+                  <div style="display: flex; justify-content: space-evenly;">
+                    {%- for price_break in product.selected_or_first_available_variant.quantity_price_breaks -%}
+                      <div style="display: flex; flex-direction: column;">
+                        <span>+{{- price_break.minimum_quantity -}} uds.</span>
+                        <span>{{- price_break.price | money_with_currency -}}</span>
+                      </div>      
+                    {%- endfor -%}
+                  </div>
+                </td>
+              {% else %}
+                <td class="upng-price price">{{ product.price | money_with_currency }}</td>
+              {% endif %}
+          {% endif %} 
+
+        {% when "parrilla-stock" %}
+          {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+            {% comment %} stock {% endcomment %}
+            <td>{{ product_qty }}</td>
+          {% endif %} 
+        {% when "parrilla-botones" %}
+          {% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+          {% comment %} boton de compra {% endcomment %}
+            <td>
+              <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
+              <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+            {% comment %} 
+              {%- if product.quantity_price_breaks_configured? -%} 
+              <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
+              <scrip  t src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
+              {%- endif -%} 
+            {% endcomment %}
+            {% comment %}
+            </div>
+            {% endcomment %}
+            {% comment %} He cambiado el Quantity-Form-template--17027595763969__main a Quantity-Form-template--{{ product.id }}__main
+                        Puede que no sea correcto porque 17027595763969 pertenece a section.id, no ha product.id {% endcomment %}
+              {% if product.variants.size <= 1 %}
+                <div id="Quantity-Form-template--{{ product.id }}__main" class="product-form__input product-form__quantity">
+                  <div class="price-per-item__container">
+                  {% comment %} Div con los botones "+" y "-" y la cantiidad. Contiene texto que no se donde se encuentra en el texto {% endcomment %}
+                    <quantity-input class="quantity" data-url="{{ product.url }}" data-section="template--{{ product.id }}__main">
+                      <button class="quantity__button no-js-hidden disabled" name="minus" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="icon icon-minus" fill="none" viewBox="0 0 10 2">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M.5 1C.5.7.7.5 1 .5h8a.5.5 0 110 1H1A.5.5 0 01.5 1z" fill="currentColor"></path>
+                        </svg>
+                      </button>
+                      <input class="quantity__input" type="number" name="quantity" id="Quantity-template--{{ product.id }}__main" data-cart-quantity="0" data-min="1" min="1" step="1" value="1" form="product-form-template--{{ product.id }}__main" max="null">
+                      <button class="quantity__button no-js-hidden" name="plus" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" class="icon icon-plus" fill="none" viewBox="0 0 10 10">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M1 4.51a.5.5 0 000 1h3.5l.01 3.5a.5.5 0 001-.01V5.5l3.5-.01a.5.5 0 00-.01-1H5.5L5.49.99a.5.5 0 00-1 .01v3.5l-3.5.01H1z" fill="currentColor"></path>
+                        </svg>
+                      </button>
+                    </quantity-input>
+                  </div>
+                </div>  
+              {% endif %}
+              
+              <div>
+                {% if product.variants.size > 1 %}
+                  <div style="display: flex; gap: 1em; flex-direction: row; padding-top: 30px">
+                    {% if enable_quick_add %}
+                      <modal-opener data-modal="#QuickAdd-{{ product.id }}">
+                        <button
+                        id="{{ product_form_id }}-submit"
+                        type="submit"
+                        name="add"
+                        class="quick-add__submit button button--full-width button--secondary{% if horizontal_quick_add %} card--horizontal__quick-add animate-arrow{% endif %}"
+                        aria-haspopup="dialog"
+                        aria-labelledby="{{ product_form_id }}-submit title-{{ section_id }}-{{ product.id }}"
+                        data-product-url="{{ product.url }}"
+                        >
+                          {{ 'products.product.choose_options' | t }}
+                          {%- if horizontal_quick_add -%}
+                            <span class="icon-wrap">{% render 'icon-arrow' %}</span>
+                          {%- endif -%}
+                          {%- render 'loading-spinner' -%}
+                        </button>
+                      </modal-opener>
+                    {% else %}
+                      <a href="{{ product.url }}" class="button button--full-width button--secondary" style="text-align: center;">{{ 'upango.comparator.modal.see_product' | t }}</a>
+                    {% endif %}
+                  {% if product.options.size == 2 %}
+                    <modal-opener class="no-js-hidden" data-modal-delay="#parrilla-pedido-rapido">
+                      <button class="button button--full-width" onclick="modalVariantesParrilla('{{ product.url }}', this)">{{ 'upango.pedido_rapido.quick_order' | t }}{%- render 'loading-spinner' -%}</button>
+                    </modal-opener>
+                  {% endif %}
+                  </div>
+                {% else %}
+                  <product-form class="product-form" data-hide-errors="false" data-section-id="template--{{ product.id }}__main">
+                    <div class="product-form__error-message-wrapper" role="alert" hidden="">
+                    {% comment %} Este es el circulo rojo que aparece cuando hay un error
+                            <svg aria-hidden="true" focusable="false" class="icon icon-error" viewBox="0 0 13 13">
+                                <circle cx="6.5" cy="6.5" r="1" stroke="white" stroke-width="2"></circle>
+                                <circle cx="6.5" cy="6.5" r="1" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"></circle>
+                            </svg> {% endcomment %}
+                      <span class="product-form__error-message"></span>
+                    </div>
+                    <form method="post" id="product-form-template--{{ product.id }}__main" accept-charset="UTF-8" class="form" enctype="multipart/form-data" novalidate="novalidate" data-type="add-to-cart-form" data-editor-form-attribute="">
+                      <input type="hidden" name="id" value="{{ product.variants[0].id }}" class="product-variant-id">
+                      <div class="product-form__buttons">
+                        <button id="ProductSubmitButton-template--{{ product.id }}__main" type="submit" name="add" class="product-form__submit button button--full-width button--secondary">
+                          <span>{{ 'products.product.add_to_cart' | t }}</span>
+                          <div class="loading__spinner hidden">
+                            <svg aria-hidden="true" focusable="false" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                              <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                            </svg>
+                          </div>
+                        </button>
+                      </div>
+                      <input type="hidden" name="product-id" value="{{ product.id }}">
+                    </form>
+                  </product-form>
+                {% endif %}
+              </div>
+            </td>
+          {% endif %}
+        {% endcase %}
+      {% endfor %}
+    </tr>
+    {% if enable_quick_add %}
+      <quick-add-modal id="QuickAdd-{{ product.id }}" class="quick-add-modal">
+        <div
+        role="dialog"
+        aria-label="{{ 'products.product.choose_product_options' | t: product_name: product.title | escape }}"
+        aria-modal="true"
+        class="quick-add-modal__content global-settings-popup"
+        tabindex="-1"
+        >
+          <button
+          id="ModalClose-{{ product.id }}"
+          type="button"
+          class="quick-add-modal__toggle"
+          aria-label="{{ 'accessibility.close' | t }}"
+          >
+            {% render 'icon-close' %}
+          </button>
+          <div id="QuickAddInfo-{{ product.id }}" class="quick-add-modal__content-info"></div>
+        </div>
+      </quick-add-modal>
+    {% endif %}
+    {% endfor %}
+  {% endcapture %}
+
+  {% assign numProductos = numProductos | plus: 1 %}
+  {% assign datosTabla = datosTabla | append: tableRow %}
+
+  <div
+    class=" section-upng-listproduct-tables product-grid-container page-width vista-tabla collection"
+    id="ProductGridContainer2"
+    style="{% unless show_parrilla %}display: none;{% endunless %}">
+    <table>
+      {{ datosTabla }}
+    </table>
+  </div>
+
+  {% render 'upng-modal-form', form_id: 'parrilla-pedido-rapido' %}
+
+  <script src="{{ 'upng-parrilla-pedido-rapido.js' | asset_url }}" defer></script>
+
+  {% unless show_parrilla %}
+    <script src="{{ 'upng-parrilla-mosaico.js' | asset_url }}" defer="defer"></script>
+  {% endunless %}
+
+{% endif %}

@@ -1,0 +1,126 @@
+{% comment %}
+  Renders a standard sidebar style menu for the header.
+
+  Usage:
+  {% render 'header-sidebar-menu' %}
+{% endcomment %}
+{{ 'header-sidebar.css' | asset_url | stylesheet_tag }}
+<header-sidebarpanel data-breakpoint="desktop">
+  <div id="sideBarPanel" class="sideBarPanel">
+    <div class="sideBarPanel__inner-container">
+      <button href="javascript:void(0)" class="closebtnSide header__icon link" onclick="closeSideBarMenu()">
+        {% render 'icon-close' %}
+      </button>
+      <div class="sideBarPanel_content">
+        <div>
+          <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
+            {%- if settings.logo != blank -%}
+              <div class="header__heading-logo-wrapper">
+                {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+                {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
+                {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
+                {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+                {{
+                  settings.logo
+                  | image_url: width: 600
+                  | image_tag:
+                    class: 'header__heading-logo motion-reduce',
+                    widths: widths,
+                    height: logo_height,
+                    width: settings.logo_width,
+                    alt: logo_alt,
+                    sizes: sizes,
+                    preload: true
+                }}
+              </div>
+            {%- else -%}
+              <span class="h2">{{ shop.name }}</span>
+            {%- endif -%}
+          </a>
+        </div>
+
+        <nav>
+          <div class="sideBarPanel_tab tab">
+            {%- for link in section.settings.menu.links -%}
+              {%- if link.links != blank -%}
+                <button
+                  class="tablinks{% if forloop.first %} active{% endif %}"
+                  onclick="openLinkOption(event, 'toggleable-Tabs-{{ link.handle }}')"
+                >
+                  {{- link.title | escape -}}
+                </button>
+
+              {%- else -%}
+                <button class="tablinks" onclick="redirectToSite('{{ link.url }}')">{{- link.title | escape -}}</button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div id="contenedorTab">
+            {%- for link in section.settings.menu.links -%}
+              {%- if link.links != blank -%}
+                <div
+                  id="toggleable-Tabs-{{ link.handle }}"
+                  class="tabcontent sideBarPanel_tabcontent {% if forloop.first %}visible{% endif %}"
+                  style="display: {% if forloop.first %}block{% else %}none{% endif %};"
+                >
+                  <ul
+                    id="HeaderMenu-MenuList-{{ forloop.index }}"
+                    class="list-unstyled sideBarPanel__linklist"
+                    role="list"
+                    tabindex="-1"
+                  >
+                    {%- for childlink in link.links -%}
+                      <li>
+                        {%- if childlink.links == blank -%}
+                          <a
+                            id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                            href="{{ childlink.url }}"
+                            class="header__menu-item list-menu__item link focus-inset childLinkSinDetails"
+                          >
+                            {{ childlink.title | escape }}
+                          </a>
+                        {%- else -%}
+                          <details id="Details-HeaderSubMenu-{{ link.handle }}-{{ childlink.handle }}">
+                            <summary
+                              id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                              class="childLinkConDetails"
+                            >
+                              <span>{{ childlink.title | escape }}</span>
+                              {% render 'icon-arrow' %}
+                            </summary>
+                            <ul
+                              id="HeaderMenu-SubMenuList-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                              class="list-unstyled sideBarPanel__nested-linklist"
+                              role="list"
+                            >
+                              {%- for grandchildlink in childlink.links -%}
+                                <li>
+                                  <a
+                                    id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                                    href="{{ grandchildlink.url }}"
+                                    class="header__menu-item list-menu__item link focus-inset"
+                                  >
+                                    {{ grandchildlink.title | escape }}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          </details>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <button id="openbtnSide" class="openbtnSide header__icon " onclick="openSideBarMenu()">
+    {% render 'icon-hamburger' %}
+  </button>
+  <script src="{{ 'header-sidebar.js' | asset_url }}" defer="defer"></script>
+</header-sidebarpanel>

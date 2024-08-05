@@ -1,0 +1,68 @@
+{% assign pedidos_reposicion = customer.current_company.metafields.upng.pedidos_de_reposicion.value %}
+{{ 'quick-add.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+<div id="ParrillaPedidosReposicion" style= "padding-bottom: 80px;">
+  {% assign productsArray = pedidos_reposicion | reverse | reverse %}
+  {% render 'upng-vista-parrilla', products: productsArray, enable_quick_add: section.settings.enable_quick_add, show_parrilla: true %}
+</div>
+
+{% schema %}
+{
+  "name": "Parrilla Resposición",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_quick_add",
+      "default": true,
+      "label": "t:sections.featured-collection.settings.enable_quick_buy.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "parrilla-foto",
+      "name": "Parrilla: Foto",
+      "limit": 1
+    },
+    {
+      "type": "parrilla-favorito",
+      "name": "Parrilla: Favorito",
+      "limit": 1
+    },
+    {
+      "type": "parrilla-nombre",
+      "name": "Parrilla: Nombre",
+      "limit": 1
+    },
+    {
+      "type": "parrilla-descripcion",
+      "name": "Parrilla: Descripción",
+      "limit": 1
+    },
+    {
+      "type": "parrilla-vendedor",
+      "name": "Parrilla: Vendedor",
+      "limit": 1
+    },
+    {
+      "type": "parrilla-stock",
+      "name": "Parrilla: Stock",
+      "limit": 1
+    },
+    {
+      "type": "parrilla-precio",
+      "name": "Parrilla: Precio",
+      "limit": 1
+    },
+    {
+      "type": "parrilla-botones",
+      "name": "Parrilla: Acciones",
+      "limit": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Parrilla Reposición"
+    }
+  ]
+}
+{% endschema %}

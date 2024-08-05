@@ -1,0 +1,74 @@
+{{ 'section-upng-texto-dinamico.css' | asset_url | stylesheet_tag }}
+
+<div class="texto-dinamico section-{{ section.id }} logos">
+  {% for i in (1..20) %}
+    <div class="logos-slide">
+      <p class="dinamico__message {{ section.settings.heading_size }}">
+        {{ section.settings.heading }}
+      </p>
+    </div>
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.upng-texto-dinamico.name",
+  "tag": "section",
+  "class": "section-textodinamicos",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Talk about your brand",
+      "label": "t:sections.upng-texto-dinamico.settings.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h0",
+          "label": "t:sections.upng-texto-dinamico.settings.text-size-dimanic.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.upng-texto-dinamico.settings.text-size-dimanic.options__2.label"
+        },
+        {
+          "value": "h2",
+          "label": "t:sections.upng-texto-dinamico.settings.text-size-dimanic.options__3.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:sections.upng-texto-dinamico.settings.text-size-dimanic.options__4.label"
+        },
+        {
+          "value": "subtitle",
+          "label": "t:sections.upng-texto-dinamico.settings.text-size-dimanic.options__5.label"
+        },
+        {
+          "value": "caption-with-letter-spacing",
+          "label": "t:sections.upng-texto-dinamico.settings.text-size-dimanic.options__6.label"
+        },
+        {
+          "value": "body",
+          "label": "t:sections.upng-texto-dinamico.settings.text-size-dimanic.options__7.label"
+        }
+      ],
+      "default": "h2",
+      "label": "t:sections.upng-texto-dinamico.settings.text-size-dimanic.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "UPNG texto dinamico"
+    }
+  ]
+}
+{% endschema %}

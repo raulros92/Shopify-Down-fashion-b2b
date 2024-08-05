@@ -1,0 +1,53 @@
+<div class="contenedor-mis-direcciones">
+
+  {% for location in customer.company_available_locations %}
+    {% render 'upng-company-location', company_location: location %}
+  {% endfor %}
+
+</div>
+
+{% schema %}
+{
+  "name": "UPNG-misdirecciones",
+  "tag": "section",
+  "class": "section-misdirecciones",
+  "limit": 1,
+  "settings": [
+    {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h5",
+              "label": "t:sections.all.heading_size.options__1.label"
+            },
+            {
+              "value": "h4",
+              "label": "t:sections.all.heading_size.options__2.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:sections.all.heading_size.options__3.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.options__4.label"
+            }
+          ],
+          "default": "h5",
+          "label": "t:sections.all.heading_size.label"    
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "presets": [
+    {
+      "name": "UPNG mis direcciones"
+    }
+  ]
+}
+{% endschema %}

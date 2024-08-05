@@ -1,0 +1,49 @@
+{%- comment -%}
+  Prepara una estructura javascript con los items del carrito actual, lista para guardar con nuestro desarrollo de carritos de agentes
+{%- endcomment -%}
+
+<script>
+  const currentCompanyId = '{{ customer.current_company.id }}';
+  const agentCurrentCartItems = [];
+  {%- if cart != empty -%}
+    {%- for item in cart.items -%}
+        agentCurrentCartItems.push({
+        variantId: '{{ item.variant.id }}',
+        quantity: {{ item.quantity }},
+    });
+    {%- endfor -%}
+
+    {% comment %}
+    {% if customer.current_company.metafields.upng.agent_carts %}
+        let savedAgentCart;
+        {%- for agent_cart in customer.current_company.metafields.upng.agent_carts.value -%}
+            {% assign cart_agente_code_int = agent_cart.agent_code.value | times: 1 %}
+            {% if cart_agente_code_int == customer.id %}
+                const savedAgentCartLineItems = [];
+
+                {%- for variant in agent_cart.variants.value -%}
+                    savedAgentCartLineItems.push({
+                        'title': '{{ variant.title }}',
+                        'variantId':'{{ variant.id }}',
+                        'quantity': 1
+                    });
+                {%- endfor -%}
+
+                {%- assign index = 0 -%}
+                {% for quantity in agent_cart.quantities.value %}
+                    savedAgentCartLineItems[{{index}}]['quantity'] = {{quantity }};
+                    {%- assign index = index | plus: 1 -%}
+                {% endfor %}
+                savedAgentCart = {
+                    'agentCode' : '{{ agent_cart.agent_code }}',
+                    'lineItems' : savedAgentCartLineItems
+                };
+            {%-endif-%}
+        {%- endfor -%}
+    {% endif %}
+    {% endcomment %}
+  {%- endif -%}
+</script>
+
+<script src="{{ 'upng-agent-carts-manager.js' | asset_url }}" defer></script>
+

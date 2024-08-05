@@ -1,0 +1,464 @@
+tbody tr td .price {
+    font-size: 1.3rem;
+}
+
+.section-upng-listproduct-tables th,
+.section-upng-listproduct-tables td {
+    /* width: 15rem; */
+    word-wrap: break-word;
+    max-width: 18rem !important;
+}
+
+
+.section-upng-listproduct-tables td span{
+    /* width: 15rem; */
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.section-upng-listproduct-tables td:last-child{
+    display: flex;
+    flex-direction: row;
+}
+
+
+@media screen and (min-width: 750px) {
+    .page-width {
+        padding: 0.5rem 0rem;
+    }
+}
+
+.button,
+.shopify-challenge__button,
+.customer button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    padding: 0 3rem;
+    cursor: pointer;
+    font: inherit;
+    font-size: 1.5rem;
+    text-decoration: none;
+    transition: box-shadow var(--duration-short) ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.button:hover,
+.shopify-challenge__button:hover,
+.customer button:hover {
+    color: black;
+    background-color: #fff;
+}
+
+
+
+
+/* body table */
+
+.section-upng-listproduct-tables table.upng-posventa-table,
+.section-upng-listproduct-tables table.upng-posventa-table td,
+.section-upng-listproduct-tables table.upng-posventa-table th {
+    box-shadow: none !important;
+    border: none;
+    color: black;
+    font-size: 14px !important;
+    /* tamaño tipografía */
+    font-style: normal;
+    font-weight: 400;
+    line-height: 116.3%;
+    text-align: start;
+    /* background: black; */
+}
+
+/*padding de todas las celdas */
+table.upng-posventa-table td,
+table.upng-posventa-table th {
+    padding: 1em;
+    /*padding de todas las celdas */
+    height: 48px !important;
+    /* altura de las celdas */
+    /* border: 0.1rem solid rgba(var(--color-foreground),.2); */
+}
+
+/* Quitar las líneas entre celdas */
+table.upng-posventa-table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 1.4rem;
+    border-style: hidden;
+    box-shadow: 0 0 0 0.1rem rgba(var(--color-foreground), .2);
+}
+
+
+/* celdas cambiando de color */
+/*
+        .section-upng-listproduct-tables tbody tr:nth-child(2n + 1) {
+            background: var(--royal-bg, #f4f4f4);
+        }
+    */
+/* Líneas abajo */
+.section-upng-listproduct-tables tbody tr {
+    border-bottom: 1px solid black;
+}
+
+/* especificaciones por tipo de celda */
+/* Pedidos resposición */
+table.upng-posventa-table td.cell-image {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    align-items: flex-start;
+    column-gap: 10px;
+}
+
+table.upng-posventa-table td.cell-image a {
+    text-decoration: none;
+    color: black;
+    /*font-family: Poppins;*/
+    font-size: 12px !important;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.section-upng-listproduct-tables table td.actions-cell {
+    text-align: end !important;
+}
+
+td img.upng-imagen-desktop {
+    display: block !important;
+}
+
+/* select tallas */
+.pedidos-reposicion .product-form__input {
+    margin: 0 !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.upng-pedidosreposicion .product-form__input input[type=radio]:checked+label {
+    background-color: #334FB4 !important;
+    color: rgb(var(--color-background)) !important;
+}
+
+.upng-pedidosreposicion .product-form__input input[type=radio]+label {
+    border: 1.5px solid #334FB4;
+    background-color: rgb(var(--color-background));
+    color: rgba(var(--color-foreground));
+    border-radius: var(--variant-pills-radius);
+    color: #334FB4;
+    ;
+    display: inline-block;
+    margin: 0.7rem 0.5rem 0.2rem 0;
+    padding: 0.625rem 0.9rem;
+    font-size: 1.4rem;
+    letter-spacing: .1rem;
+    line-height: 1;
+    text-align: center;
+    transition: border var(--duration-short) ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.upng-pedidosreposicion .product-form__input input[type=radio] {
+    clip: rect(0, 0, 0, 0);
+    overflow: hidden;
+    position: absolute;
+    height: 1px;
+    width: 1px;
+}
+
+.upng-pedidosreposicion input[type="radio" i] {
+    background-color: initial;
+    cursor: default;
+    appearance: auto;
+    box-sizing: border-box;
+    margin: 3px 3px 0px 5px;
+    padding: initial;
+    border: initial;
+}
+
+.section-upng-listproduct-tables .cell-variantes {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: flex-start !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    margin: 0;
+}
+
+
+.section-upng-listproduct-tables tbody tr td quantity-input.quantity {
+    min-height: calc((var(--inputs-border-width) * 2) + 3.5rem);
+    max-width: 12rem !important;
+}
+
+.section-upng-listproduct-tables tbody tr td quantity-input.quantity {
+    color: rgba(var(--color-foreground));
+    position: relative;
+    /* width: calc(10rem / var(--font-body-scale) + var(--inputs-border-width));*/
+    display: flex;
+    border-radius: var(--inputs-radius);
+    min-height: calc((var(--inputs-border-width) * 2) + 4.5rem);
+}
+
+.section-upng-listproduct-tables table tbody .quantity__button {
+    width: calc(2.5rem / var(--font-body-scale));
+    flex-shrink: 0;
+    font-size: 1.8rem;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(var(--color-foreground));
+    padding: 0;
+}
+
+
+
+/* cabecera tablas */
+/* estilos especificos THEAD */
+.section-upng-listproduct-tables thead tr th,
+.section-upng-listproduct-tables table.upng-posventa-table th {
+    border-bottom: 0.1rem solid rgba(var(--color-foreground), .2) !important;
+    background: black;
+    color: white !important;
+}
+
+
+.upng-thead-mobile {
+    display: none !important;
+}
+
+td img.upng-imagen-desktop {
+    display: block !important;
+}
+
+.section-upng-listproduct-tables table {
+    /* todas las celdas con el mismo tamaño */
+    table-layout: auto;
+    /* segun contenido */
+    /* todas las celdas tiene el tamaño que ocupa su contenido 
+    table-layout: fixed;*/
+    width: 100%;
+    box-sizing: revert !important;
+}
+
+
+
+/* --------------------------------------------------------------------------  */
+/* Mobile */
+
+@media screen and (max-width: 749px) {
+
+    .upng-pedidosreposicion.section-upng-listproduct-tables table {
+        min-width: fit-content !important;
+    }
+
+    .upng-pedidosreposicion.upng-pedidosreposicion {
+        overflow: unset !important;
+    }
+
+    .section-upng-listproduct-tables table {
+        width: 100% !important;
+    }
+
+    .section-upng-listproduct-tables thead {
+        display: none !important;
+    }
+
+    .section-upng-listproduct-tables tr {
+        display: block !important;
+        width: 100% !important;
+        grid-template-columns: 1fr;
+        justify-items: start !important;
+    }
+
+    .section-upng-listproduct-tables tbody tr td {
+        width: auto !important;
+        grid-template-columns: 50px 1fr !important;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+    }
+
+    .section-upng-listproduct-tables tbody tr td span {
+        width: 50% !important;
+    }
+
+    .upng-select-cantidad {
+        width: 31rem !important;
+    }
+
+    .upng-thead-mobile {
+        display: block !important;
+        font-size: 1.5rem !important;
+    }
+
+    .section-upng-listproduct-tables td,
+    .section-upng-listproduct-tables table td {
+        width: 100% !important;
+    }
+
+    .section-upng-listproduct-tables td span {
+        text-align: end;
+    }
+
+    .section-upng-listproduct-tables td span:first-child {
+        text-align: start !important;
+    }
+
+    .pedidos-reposicion tbody tr td:nth-child(3),
+    .pedidos-reposicion thead tr th:nth-child(3),
+    .pedidos-reposicion tbody tr td:nth-child(5),
+    .pedidos-reposicion thead tr th:nth-child(5),
+    .pedidos-reposicion tbody tr td:last-child,
+    .pedidos-reposicion thead tr th:last-child,
+    .pedidos-reposicion tbody tr td {
+        width: 100% !important;
+        height: fit-content !important;
+    }
+
+    .section-upng-listproduct-tables td .button--primary,
+    .section-upng-listproduct-tables td.upng-button-primary,
+    .section-upng-listproduct-tables td.upng-button-primary span {
+        width: 100% !important;
+        height: fit-content !important;
+        text-align: center !important;
+    }
+
+    /*
+    .section-upng-listproduct-tables td.upng-button-primary {
+        padding: 2rem !important;
+        border-bottom: 1px solid black!important;
+        margin: 1rem !important;
+    }
+*/
+    *:focus-visible {
+        outline: none !important;
+        outline-offset: 0 !important;
+        box-shadow: none !important;
+    }
+
+    /*
+    td.select-cantidad select {
+        display: block !important;
+        border: none !important;
+        color: white;
+        background: #384428;
+        padding: 1rem 2rem;
+        border-radius: 20px;
+    }
+*/
+    td img.upng-imagen-desktop {
+        display: none !important;
+    }
+
+    .pedidos-reposicion tbody tr td:first-child {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: flex-start;
+        justify-content: space-between;
+        align-items: flex-start;
+        column-gap: 10px;
+    }
+
+    .section-upng-listproduct-tables td span,
+    .section-upng-listproduct-tables td a {
+        text-align: end !important;
+        font-size: 1.6rem !important;
+        font-style: normal;
+        font-weight: 400;
+    }
+
+    .section-upng-listproduct-tables td span.upng-thead-mobile {
+        font-size: 1.6rem !important;
+        font-style: normal;
+        font-weight: 700;
+    }
+
+    .pedidos-reposicion tbody tr td:first-child a {
+        text-decoration: none;
+        /*color: var(--royal-dark, #384428);*/
+        font-size: 1.6rem !important;
+        font-style: normal;
+        font-weight: 400;
+    }
+
+    #pedidos-table td:last-child {
+        justify-content: center !important;
+        padding-bottom: 3rem !important;
+    }
+
+    .section-upng-listproduct-tables td.cell-link,
+    .section-upng-listproduct-tables td.cell-download {
+        justify-content: center !important;
+    }
+
+    .upng-select-cantidad {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-content: flex-end !important;
+        justify-content: flex-end !important;
+        align-items: flex-end !important;
+        margin: 0;
+    }
+
+    .section-upng-listproduct-tables {
+        border: 1px solid black;
+    }
+
+    .section-upng-listproduct-tables tbody tr td span.status {
+        width: auto !important;
+        padding: 0.3rem 1rem;
+    }
+}
+
+
+
+
+
+
+
+/* ---------------------------------------------------------------  */
+
+/* Para las tablas que no tienen clases */
+
+
+
+
+.section-upng-listproduct-tables table:not([class]),
+.section-upng-listproduct-tables table:not([class]) td,
+.section-upng-listproduct-tables table:not([class]) th {
+    box-shadow: none !important;
+    border: none;
+    font-size: 12px !important;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 116.3%;
+    text-align: start;
+}
+
+
+.section-upng-listproduct-tables thead tr th,
+.section-upng-listproduct-tables table:not([class]) th {
+    border-bottom: 0.1rem solid rgba(var(--color-foreground), .2) !important;
+    background: black;
+    color: white !important;
+}
+
+.simple-modal-content table {
+    width: 100%;
+}

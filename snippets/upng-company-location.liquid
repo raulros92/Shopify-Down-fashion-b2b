@@ -1,0 +1,43 @@
+{% comment %}
+  Accepts:
+  - company_location: {company_location Object} company_location to show
+  Usage:
+  {% render 'upng-company-location', company_location: company_location %}
+{% endcomment %}
+
+{{ 'section-upng-mis-datos-menu.css' | asset_url | stylesheet_tag }}
+
+<div class="my-data-section page-width mis-direcciones">
+  <div>
+    <ul
+      class="my-data mi-direccion"
+    >
+      {% if company_location.name != empty %}
+        <li>
+          <h3 class="{{ section.settings.heading_size }}">{{ company_location.name }}</h3>
+        </li>
+      {% endif %}
+
+      {% assign address = company_location.shipping_address %}
+      {% if address.address1 != blank %}
+        <li>{{ address.address1 }}</li>
+      {% endif %}
+      {% if address.address1 != blank %}
+        <li>{{ address.address1 }}</li>
+      {% endif %}
+      {% if address.address2 != blank %}
+        <li>{{ address.address2 }}</li>
+      {% endif %}
+      <li>
+        {{ address.zip -}}
+        {%- if address.city != blank %}, {{ address.city }}{% endif %}
+      </li>
+      {% if address.country != blank %}
+        <li>{{ address.country.name }}</li>
+      {% endif %}
+      {% if address.phone != blank %}
+        <li>{{ address.phone }}</li>
+      {% endif %}
+    </ul>
+  </div>
+</div>

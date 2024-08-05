@@ -1,0 +1,9 @@
+{{'upng_show_sku.css' | asset_url | stylesheet_tag }}
+
+{% if product and product.variants.size > 0 %}
+  <div class="product-sku">
+    <span class="sku-label">Ref:</span>
+    <span class="sku-value">{{ product.variants.first.sku }}</span>
+  </div>
+{% endif %}
+

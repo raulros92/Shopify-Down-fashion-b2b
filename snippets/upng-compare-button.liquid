@@ -1,0 +1,11 @@
+{{ 'upng-compare-button.css' |  asset_url |  stylesheet_tag }}
+<div class="compare-button-container" id="compare-button-container" style="display: none;">
+  <div class="compare-elems">
+    <p class="compare-n-products-text"></p>
+    <modal-opener class="no-js-hidden" data-modal="#ComparasionModal">
+      <button class="button compareBtn" type="button" id="compareModalBtn">{{ 'upango.comparator.drawer.compare' | t }}</button>
+    </modal-opener>
+  </div>
+</div>
+
+{% render 'upng-modal-form', form_id: 'ComparasionModal', form_type: 'compare_modal', form_size: "large" %}

@@ -1,0 +1,140 @@
+{{ 'section-upng-myaccount-tables.css' | asset_url | stylesheet_tag }}
+<style>
+  .agent-cart-icon{
+    width:25px;
+  }
+</style>
+{% if customer.metafields.upng.codigo_agente != 'SUPERAGENTE' %}
+<div class="info-agente">
+  <p><strong>{{ 'upango.agents.select_company.agent_code' | t }}:</strong> {{ customer.metafields.upng.codigo_agente }}</p>
+</div>
+{% endif %}
+<form action="#" method="post" id="customer-search-form">
+  <div class="upng-filtros center">
+    <div class="upng-fields">
+      <input type="hidden" id="current_company_id" value="{{ customer.current_company.id }}">
+      <div class="field">
+        <input
+          class="field__input"
+          type="text"
+          id="agentSearchText"
+          name="agentSearchText"
+          placeholder="{{ 'upango.agents.select_company.search_text' | t }}"
+        >
+        <label class="field__label" for="agentSearchText">{{ 'upango.agents.select_company.search_text' | t }}</label>
+        <button class="button" id="agentSearchButton">{{ 'upango.agents.select_company.search' | t }}</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% # inicio div tabla %}
+<div id="agent-companies">
+  <div class="center">{% render 'upng-loading' %}</div>
+  {% # resultados %}
+  <p id="results-messages" class="pt-3" style="display:none">
+    <span id="message_results">{{ 'upango.agents.select_company.customer_with_agent_code' | t }}</span>
+    <span id="message_no_results" style="display:none">
+      {{- 'upango.agents.select_company.no_results' | t -}}
+    </span>   
+  </p>
+  <div class="upng-table-micuenta">
+    <table id="agent-companies-table" style="display:none">
+      <thead>
+        <tr>
+          <th>{{ 'upango.agents.select_company.company_id' | t }}</th>
+          <th>{{ 'upango.agents.select_company.company_name' | t }}</th>
+          {% if section.settings.agent_carts_enabled == "true" %}
+            <th>{{ 'upango.agents.carts.cart' | t }}</th>
+            <th></th>
+          {% endif %}
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+{% # fin div tabla %}
+<br>
+{% # Comienzo modal tabla de usuarios %}
+{% if section.settings.agent_carts_enabled == "true" %}
+  {% render 'upng-modal-form', form_id: 'upng-agente-clientes-modal', form_type: 'agente_cart_modal', form_size: "medium" %}
+{% endif %}
+{% # fin modal tabla de usuarios %}
+
+<script>
+  {% #Login URL to avoid new accounts %}
+  {% assign account_url = "https://shopify.com/" | append: shop.id | append: "/account/locations" %}
+  const accountUrl = '{{ account_url }}';
+  var agentes_cart_icon = '{{ section.settings.cart_icon |  image_url: width: 120  }}';
+  var agentes_cart_icon_empty = '{{ section.settings.cart_icon_empty | img_url: width: 120 }}';
+</script>
+{% # Traducciones %}
+<script>
+  var agents_translations = {
+    select: "{{ 'upango.agents.carts.select' | t }}",
+    cart: "{{ 'upango.agents.carts.cart' | t }}",
+    show_carts: "{{ 'upango.agents.carts.show_carts' | t }}",
+    show_cart: "{{ 'upango.agents.carts.show_cart' | t }}",
+    name: "{{ 'upango.agents.carts.name' | t }}",
+    amount: "{{ 'upango.agents.carts.amount' | t }}",
+    product_amount: "{{ 'upango.agents.carts.product_amount' | t }}",
+    product: "{{ 'upango.agents.carts.product' | t }}",
+    variant: "{{ 'upango.agents.carts.variant' | t }}",
+    quantity: "{{ 'upango.agents.carts.quantity' | t }}",
+    unit_price: "{{ 'upango.agents.carts.unit_price' | t }}",
+    hide_cart: "{{ 'upango.agents.carts.hide_cart' | t }}",
+  };
+  var agent_carts_status = {{ section.settings.agent_carts_enabled }}
+</script>
+{% render 'upng-agent-carts-manager' %}
+<script src="{{ 'upng-agent-companies.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "t:sections.upng-agent-companies.name",
+  "tag": "section",
+  "class": "agent-companies page-width",
+  "limit": 1,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "presets": [
+    {
+      "name": "t:sections.upng-agent-companies.presets.name"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "label": "t:sections.upng-agent-companies.settings.enable_agent_carts",
+      "id": "agent_carts_enabled",
+      "options": [
+        {
+          "label": "t:sections.upng-agent-companies.settings.enable_agent_carts_true",
+          "value": "true"
+        },
+        {
+          "label": "t:sections.upng-agent-companies.settings.enable_agent_carts_false",
+          "value": "false"
+        }
+      ],
+      "default": "false"
+    },
+    {
+      "type": "image_picker",
+      "label": "t:sections.upng-agent-companies.settings.cart_icon",
+      "id": "cart_icon"
+    },
+    {
+      "type": "image_picker",
+      "label": "t:sections.upng-agent-companies.settings.cart_icon_empty",
+      "id": "cart_icon_empty"
+    }
+  ]
+}
+{% endschema %}

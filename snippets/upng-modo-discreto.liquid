@@ -1,0 +1,16 @@
+{% comment %} 
+    Usage: 
+    {% render 'upng-modo-discreto' %}
+{% endcomment %}
+
+{% comment %} <button type="button" class="button" id="modo-discreto">{{- 'sections.discreet_mode.button' | t -}}</button> {% endcomment %}
+
+{{ 'upng-modo-discreto.css' | asset_url | stylesheet_tag }}
+
+<div class="announcement-bar__announcement modo-discreto__center">
+    <label for="modo-discreto">{{- 'sections.discreet_mode.button' | t -}}</label>
+    <input type="checkbox" name="modo-discreto" id="modo-discreto">
+</div>
+
+
+<script src="{{ 'upng-modo-discreto.js' | asset_url }}" defer="defer"></script>

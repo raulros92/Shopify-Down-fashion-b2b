@@ -1,0 +1,32 @@
+{% if customer.b2b? %}
+  {% if customer.current_company.metafields.upng.puede_escoger_pago %}
+    
+    <h2>{{ 'upango.change_payment.title' | t }}</h2>
+    <input
+      type="radio"
+      name="attributes[changePayment]"
+      class="no-js-hidden"
+      id="changePaymentToB2C"
+      value="b2cPayment"
+      required="required"
+      form="cart"
+      location-id="{{ customer.current_location.id }}"
+      company-id="{{ customer.current_company.id }}"
+    >
+    <label for="changePaymentToB2C">{{ 'upango.change_payment.pay_now' | t }}</label>
+    <br>
+    <input
+      type="radio"
+      name="attributes[changePayment]"
+      class="no-js-hidden"
+      id="changePaymentToB2B"
+      value="b2bPayment"
+      required="required"
+      form="cart"
+      location-id="{{ customer.current_location.id }}"
+      company-id="{{ customer.current_company.id }}"
+    >
+    <label for="changePaymentToB2B">{{ 'upango.change_payment.pay_later' | t }}</label>
+    <script src="{{ 'upng-payment-terms.js' | asset_url }}" defer></script>
+  {% endif %}
+{% endif %}

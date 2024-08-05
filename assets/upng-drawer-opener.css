@@ -1,0 +1,9 @@
+.rotatedBtn {
+  position: fixed;
+  z-index: 10;
+  top: 35%;
+  transform: rotate(270deg);
+  right: 0;
+  vertical-align: top;
+  transform-origin: 100% 100%;
+}

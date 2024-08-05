@@ -1,0 +1,86 @@
+.hotspot-container {
+  z-index: 2;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  overflow: visible;
+  gap: 5%;
+}
+
+.hotspot-container-mobile {
+  display: none;
+  z-index: 1;
+  position: absolute;
+  align-items: center;
+  overflow: visible;
+  gap: 5%;
+}
+
+.hotspot {
+  position: absolute;
+  text-align: center;
+  border-radius: 50%;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.hotspot-content {
+  position: absolute;
+  padding: 2em;
+  border-radius: 1em;
+  flex-shrink: 0;
+  width: max-content;
+  word-wrap: break-word;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.hotspot-container img {
+  align-self: center;
+  justify-self: center;
+}
+
+.hotspot span {
+  font-weight: bold;
+}
+
+.media-mobile {
+  display: none;
+  background-color: rgba(var(--color-foreground), 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.media-mobile > img {
+  object-fit: cover;
+  object-position: center center;
+  transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.media-mobile > *:not(.zoom):not(.deferred-media__poster-button),
+.media-mobile model-viewer {
+  display: block;
+  max-width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+@media screen and (max-width: 749px) {
+  .hotspot-banner .media-mobile {
+    display: block;
+  }
+  .hotspot-banner .media {
+    display: none;
+  }
+  .hotspot-container {
+    display: none;
+  }
+  .hotspot-container-mobile {
+    display: flex;
+  }
+}

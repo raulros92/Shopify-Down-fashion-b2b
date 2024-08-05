@@ -1,0 +1,59 @@
+{%- comment -%}
+  {{ 'section-upng-area-cliente-menu.css' | asset_url | stylesheet_tag }}
+{%- endcomment -%}
+
+{%- if section.settings['area-menu'] != blank -%}
+  <div class="page-width">
+    <ul class="area-menu-list">
+      {%- for link in section.settings['area-menu'].links -%}
+        {% # Restricciones de páginas solo pra usuarios b2b %}
+        {% if customer.b2b? or link.object.metafields.upng.solo_b2b != true %}
+          {% # Restricciones de páginas por grupos %}
+          {% if link.object.metafields.upng.grupo_clientes == blank
+            or customer.tags contains link.object.metafields.upng.grupo_clientes
+          %}
+            <li>
+              <a href="{{ link.url }}" class="area-menu-item {% if link.active %} area-menu-item-active{% endif %}">
+                {{ link.object.metafields.upng.icono | image_url: width: 200 | image_tag }}
+                <span>{{ link.title }}</span>
+              </a>
+            </li>
+          {% endif %}
+        {% endif %}
+      {%- endfor -%}
+      <li>
+        {% # boton de cerrar sesión %}
+        <a href="{{ routes.account_logout_url }}">
+          {% comment %}
+            {%#icono del theme por defecto%}
+            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 18 19">
+              <path fill-rulse="evenodd" clip-rule="evenodd"
+                d="M6 4.5a3 3 0 116 0 3 3 0 01-6 0zm3-4a4 4 0 100 8 4 4 0 000-8zm5.58 12.15c1.12.82 1.83 2.24 1.91 4.85H1.51c.08-2.6.79-4.03 1.9-4.85C4.66 11.75 6.5 11.5 9 11.5s4.35.26 5.58 1.15zM9 10.5c-2.5 0-4.65.24-6.17 1.35C1.27 12.98.5 14.93.5 18v.5h17V18c0-3.07-.77-5.02-2.33-6.15-1.52-1.1-3.67-1.35-6.17-1.35z"
+                fill="currentColor">
+            </svg>
+          {% endcomment %}
+          <svg width="30" height="40" viewBox="0 0 30 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0.5H29.5V3.5H3V36.5H29.5V39.5H0V0.5Z" fill="#00000"/>
+            <path d="M22.8839 21.2424H6.5V17.7576H22.8839L18.6253 13.4641L21.0693 11L29.5 19.5L21.0693 28L18.6253 25.5359L22.8839 21.2424Z" fill="#00000"/>
+          </svg>
+          <span>{{ 'customer.log_out' | t }} </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "UPNG Menú área cliente",
+  "tag": "section",
+  "class": "page-width upng-areamenu",
+  "settings": [
+    {
+      "type": "link_list",
+      "label": "Menú área cliente",
+      "id": "area-menu"
+    }
+  ]
+}
+{% endschema %}

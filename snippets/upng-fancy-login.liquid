@@ -1,0 +1,145 @@
+{% comment %}
+  Renders fancy login
+
+  Accepts:
+  - color_scheme: {String} sets the color scheme of the notification (optional)
+  - desktop_menu_type: {String} passes the desktop menu type which allows us to use the right css class (optional)
+
+  Usage:
+  {% render 'fancy-login' %}
+{% endcomment %}
+
+{%- liquid
+  # Comprobamos si están activas las cuentas falsas comprobando una URL que cambia segun la configuración (No hay un atributo en liquid que nos diga la configuración, esta es una forma de saberlo)
+  assign classic_accounts_enabled = false
+  if routes.account_login_url contains 'login'
+    assign classic_accounts_enabled = true
+  endif
+
+  # shopify my account page
+  assign account_url = routes.account_url
+  if customer
+    # Custom my account page
+    if settings.customer_account_custom_page != blank
+      assign account_url = settings.customer_account_custom_page.url
+    endif
+  else
+    # Si las cuentas clasicas están activas
+    if classic_accounts_enabled
+      # El login será la URL que nos da shopify para el formularo normal
+      assign account_url = routes.account_login_url
+    else
+      # Login URL to avoid new accounts
+      assign account_url = 'https://shopify.com/' | append: shop.id | append: '/account/locations'
+    endif
+  endif
+-%}
+<fancy-login>
+  <div class="fancy-login-wrapper{% if desktop_menu_type != 'drawer' %} page-width{% endif %}">
+    <div
+      id="fancy-login"
+      class="fancy-login focus-inset{% if color_scheme %} color-{{ color_scheme }} gradient{% endif %}"
+      aria-modal="true"
+      aria-label="{{ 'general.cart.item_added' | t }}"
+      role="dialog"
+      tabindex="-1"
+    >
+      <div class="fancy-login__header close">
+        <button
+          type="button"
+          class="fancy-login__close modal__close-button link link--text focus-inset"
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          <svg class="icon icon-close" aria-hidden="true" focusable="false">
+            <use href="#icon-close">
+          </svg>
+        </button>
+      </div>
+
+      {%- comment -%}  AGENTE {%- endcomment -%}
+      {% if customer.tags contains 'agente' %}
+        <div>
+          {% if customer.current_company != blank %}
+            <h2 class="fancy-login__heading h5">
+              {% render 'icon-agent' %}
+              {{ 'upango.agents.head_element.customer' | t }}
+            </h2>
+            <div>
+              <div>
+                <strong>{{ 'upango.agents.head_element.agent' | t }}:</strong> {{ customer.name }}
+              </div>
+              <div>
+                <strong>{{ 'upango.agents.head_element.customer' | t }}:</strong> {{ customer.current_company.name }}
+              </div>
+              {% assign page-agentes = pages['seleccion-de-cliente'] %}
+              {% if page-agentes != blank %}
+                <a href="{{ page-agentes.url }}" class="button button--primary button--full-width">
+                  {{ 'upango.agents.head_element.remove_assignacion' | t }}
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% comment %}
+        utiliza el documento de :
+              {{ 'upango-agent-session.js' | asset_url | script_tag }}
+      {% endcomment %}
+      {%- comment -%} FIN AGENTE {%- endcomment -%}
+
+      {%- comment -%}  Si existe el agente no me muestres este título pero si no muestrame el otro {%- endcomment -%}
+      {% if customer.current_company == blank %}
+        <h2 class="fancy-login__heading caption-large text-body">
+          {% if customer %}{{ customer.name }}{% endif %}
+        </h2>
+      {% else %}
+        <h2 class="fancy-login__heading h5">
+          {% render 'icon-account' %}
+          {{ 'upango.agents.head_element.my_account' | t }}
+        </h2>
+      {% endif %}
+
+      <div class="fancy-login__links">
+        <a
+          class="button button--primary button--full-width"
+          href="{{ account_url }}"
+        >
+          {{ 'customer.go_to_my_account' | t }}
+        </a>
+
+        {% if customer %}
+          <a href="{{ routes.account_logout_url }}" class="button button--secondary button--full-width">
+            {{ 'customer.log_out' | t }}
+          </a>
+
+        {% else %}
+          {% # REGISTRO %}
+          {% # Si son nuevas cuentas clasicas será un enlace a la página de registro %}
+          {% if classic_accounts_enabled %}
+            <a href="{{ routes.account_register_url }}" class="button button--secondary button--full-width">
+              {{ 'customer.sign_up' | t }}
+            </a>
+          {% else %}
+            {% # Si son nuevas cuentas se presenta el popup de alta %}
+            <modal-opener class="no-js-hidden" data-modal="#ModalAltaFormFancyLogin">
+              <button class="button button--secondary button--full-width" type="button">
+                {{ 'customer.sign_up' | t }}
+              </button>
+            </modal-opener>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</fancy-login>
+
+{% if classic_accounts_enabled == false %}
+  {% render 'upng-modal-form', form_id: 'ModalAltaFormFancyLogin', form_type: 'alta' %}
+{% endif %}
+
+{% style %}
+  .fancy-login {
+    display: none;
+  }
+{% endstyle %}

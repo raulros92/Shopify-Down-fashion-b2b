@@ -1,0 +1,147 @@
+{% comment %}
+  Renders cart drawer
+
+  Usage:
+  {% render 'cart-drawer' %}
+{% endcomment %}
+
+{% style %}
+  .upng-drawer-item {
+    display: grid;
+    grid-template: repeat(2, auto) / 1fr 2fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 0;
+  }
+{% endstyle %}
+
+{{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-cart-drawer.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'upng-drawer.js' | asset_url }}" defer="defer"></script>
+
+<style>
+  .drawer {
+    visibility: hidden;
+  }
+</style>
+
+<upango-drawer class="drawer upngDrawer">
+  <div id="UpngDrawer" class="cart-drawer">
+    <div id="UpngDrawer-Overlay" class="cart-drawer__overlay"></div>
+    <div
+      class="drawer__inner gradient color-{{ settings.cart_color_scheme }}"
+      role="dialog"
+      aria-modal="true"
+      aria-label="{{ 'sections.cart.title' | t }}"
+      tabindex="-1"
+    >
+      <div class="drawer__header">
+        <h2 class="drawer__heading">{{ 'upango.comparator.title' | t }}</h2>
+        <button
+          class="drawer__close"
+          type="button"
+          onclick="this.closest('upango-drawer').close()"
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          {% render 'icon-close' %}
+        </button>
+      </div>
+      <upango-drawer-items
+      >
+          <div id="UpngDrawer-CartItems" class="drawer__contents js-contents">
+              <div class="drawer__cart-items-wrapper">
+                <table class="cart-items" role="table">
+                  <thead role="rowgroup">
+                    <tr role="row">
+                      <th
+                        id="UpngDrawer-ColumnProduct"
+                        class="caption-with-letter-spacing"
+                        scope="col"
+                        role="columnheader"
+                        style="padding: 1em;"
+                      >
+                        {{ 'sections.cart.headings.product' | t }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody role="rowgroup">
+                    <p style="display: none;" id="compare-drawer-delete-translated">{{ 'upango.comparator.drawer.delete' | t }}</p>
+                    {% comment %}
+                    Se insertan los items con javascript
+                    Aquí tienes un ejemplo:
+                    <tr class="cart-item" role="row">
+                      <td>
+                        <img
+                          class="cart-item__image"
+                          src="//upangodemo3.myshopify.com/cdn/shop/files/306921main_ECN-2092_full.jpg?v=1700497990&width=533"
+                          alt="placeholder"
+                          loading="lazy"
+                          width="150"
+                        >
+                      </td>
+                      <td class="cart-item__details" role="cell" headers="CartDrawer-ColumnProduct">
+                        <p class="caption-with-letter-spacing light">General Dynamics</p>
+                        <a href="#" class="cart-item__name h4 break">
+                          NASA F-111 Aardvark
+                        </a>
+                      </td>
+                      <td><a href="#" style="text-decoration: none; color: inherit;">Eliminar</a></td>
+                    </tr>
+                    {% endcomment %}
+                  </tbody>
+                </table>
+              </div>
+            <p id="UpngDrawer-LiveRegionText" class="visually-hidden" role="status"></p>
+            <p id="UpngDrawer-LineItemStatus" class="visually-hidden" aria-hidden="true" role="status">
+              {{ 'accessibility.loading' | t }}
+            </p>
+          </div>
+          <div id="UpngDrawer-CartErrors" role="alert"></div>
+      </upango-drawer-items>
+      <div class="drawer__footer">
+        <div class="cart__ctas" {{ block.shopify_attributes }}>
+          <noscript>
+            <button type="submit" class="cart__update-button button button--secondary" form="CartDrawer-Form">
+              {{ 'sections.cart.update' | t }}
+            </button>
+          </noscript>
+          <modal-opener class="no-js-hidden" data-modal="#ComparasionModal">
+              <button
+              type="submit"
+              id="UpangoDrawer-Button"
+              class="cart__checkout-button button"
+              form="UpngDrawer-Form"
+              style="width: 100%;"
+              onclick="this.closest('upango-drawer').close()"
+            >
+            {{ 'upango.comparator.drawer.compare' | t }}
+            </button>
+          </modal-opener>
+        </div>
+      </div>
+    </div>
+  </div>
+</upango-drawer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function isIE() {
+      const ua = window.navigator.userAgent;
+      const msie = ua.indexOf('MSIE ');
+      const trident = ua.indexOf('Trident/');
+
+      return msie > 0 || trident > 0;
+    }
+
+    if (!isIE()) return;
+    const cartSubmitInput = document.createElement('input');
+    cartSubmitInput.setAttribute('name', 'checkout');
+    cartSubmitInput.setAttribute('type', 'hidden');
+    document.querySelector('#cart').appendChild(cartSubmitInput);
+    document.querySelector('#checkout').addEventListener('click', function (event) {
+      document.querySelector('#cart').submit();
+    });
+  });
+</script>

@@ -1,0 +1,88 @@
+{% # Liquid de momento no permite recuperar la billing address de las company location. Los recuperamos mediante llama a nuestra app / admin api %}
+
+{{ 'section-upng-mis-datos-menu.css' | asset_url | stylesheet_tag }}
+
+<div class="my-data-section page-width mis-datos">
+  <ul class="my-data mi-dato">
+    {% # Usuario B2B %}
+    {% if customer.b2b? %}
+      {% assign company = customer.current_company %}
+      {% if company.name != empty %}
+        <li>
+          <h3 class="{{ section.settings.heading_size }}">{{ company.name }}</h3>
+        </li>
+      {% endif %}
+      <li>
+        <h3 class="{{ section.settings.heading_size }}">{{ customer.name }}</h3>
+      </li>
+      <li id="li-billingaddress-address1" style="display:none"><span id="billingaddress-address1"></span></li>
+      <li id="li-billingaddress-address2" style="display:none"><span id="billingaddress-address2"></span></li>
+      <li id="li-billingaddress-zip" style="display:none">
+        <span id="billingaddress-zip"></span>
+        <span id="billingaddress-city"></span>
+      </li>
+      <li id="li-billingaddress-countryname" style="display:none"><span id="billingaddress-countryname"></span></li>
+      <li>{{ customer.email }}</li>
+      <li id="li-billingaddress-phone" style="display:none"><span id="billingaddress-phone"></span></li>
+      {% # Usuario B2C %}
+    {% else %}
+      <li>
+        <h3 class="{{ section.settings.heading_size }}">{{ customer.name }}</h3>
+      </li>
+      <li>{{ customer.email }}</li>
+    {% endif %}
+  </ul>
+</div>
+{% if customer.b2b? %}
+  {% assign company = customer.current_company %}
+  <script>
+    const companyId = '{{ company.id }}';
+  </script>
+  <script src="{{ 'upango-mis-datos.js' | asset_url }}" defer></script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "UPNG-misdatos",
+  "tag": "section",
+  "class": "section-misdatos",
+  "limit": 1,
+  "settings": [
+    {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h5",
+              "label": "t:sections.all.heading_size.options__1.label"
+            },
+            {
+              "value": "h4",
+              "label": "t:sections.all.heading_size.options__2.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:sections.all.heading_size.options__3.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.options__4.label"
+            }
+          ],
+          "default": "h5",
+          "label": "t:sections.all.heading_size.label"    
+    }
+  ],
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "presets": [
+    {
+      "name": "UPNG mis datos"
+    }
+  ]
+}
+{% endschema %}

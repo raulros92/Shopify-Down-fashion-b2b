@@ -1,0 +1,248 @@
+{% comment %}
+  Funcionalidad para crear el modal popup con el formulario de ficha de producto y se creará la variable json con toda la información a exportar,
+  se declaran los estilos de las notificaciones de exito o error de la llamada y se declara el js a ejecutar.
+  Usage:
+  {% render 'upng-exportador-ficha-producto' %}
+{% endcomment %}
+
+{% assign ficha_producto_modal = section.blocks | where: 'type', 'ficha_en_pdf' %}
+{%- for block in ficha_producto_modal -%}
+  {{ 'upng-alert.css' | asset_url | stylesheet_tag }}
+  <modal-dialog id="PopupModal-{{ block.id }}" class="product-popup-modal" {{ block.shopify_attributes }}>
+    <div
+      role="dialog"
+      aria-label="{{ block.settings.text }}"
+      aria-modal="true"
+      class="product-popup-modal__content product-popup-modal__content__ficha-producto"
+      tabindex="-1"
+      style = "max-width: 760px; max-height: 60%;" 
+      {% comment %} Cambiar el max-width y el max-height para que sea dinámico {% endcomment %}
+    >
+      <button
+        id="ModalClose-{{ block.id }}"
+        type="button"
+        class="product-popup-modal__toggle product-popup-modal__toggle__ficha-producto"
+        aria-label="{{ 'accessibility.close' | t }}"
+      >
+        {% render 'icon-close' %}
+      </button>
+      <div class="page-width">
+        <div id="exportar-ficha-producto-result"></div>
+        <h4 style="display: flex; justify-content: center;">{{ 'upango.ficha-producto-exportar.formulario.title' | t }}</h4>
+        <p>{{ 'upango.ficha-producto-exportar.formulario.subtitle' | t }}</p>
+        <form
+          id="form_exportar_ficha_producto"
+          action="/apps/upango_exportador_catalogo/ficha_producto"
+          method="post"
+          enctype="multipart/form-data"
+          class="alta-form upng-form"
+        >
+          
+          <div class="upng-fields">
+            <div>
+              <label for="logo">{{ 'upango.ficha-producto-exportar.formulario.logo' | t }}</label><br>
+              <input type="file" id="logo" name="logo" accept="image/*">
+            </div>
+            <div class="field">
+              <input
+                class="field__input"
+                type="text"
+                required="required"
+                id="nombre_tienda"
+                name="nombre_tienda"
+                placeholder="{{ 'upango.ficha-producto-exportar.formulario.nombre' | t }}"
+              >
+              <label class="field__label" for="nombre_tienda">
+                {{- 'upango.ficha-producto-exportar.formulario.nombre' | t -}}
+              </label>
+            </div>
+          
+
+            <!-- Direccion -->
+            <div class="field">
+              <input
+                class="field__input"
+                id="direccion"
+                type="text"
+                name="direccion"
+                required="required"
+                placeholder="{{ 'upango.ficha-producto-exportar.formulario.direccion-ph' | t }}"
+              >
+              <label class="field__label" for="direccion">
+                {{- 'upango.ficha-producto-exportar.formulario.direccion' | t -}}
+              </label>
+            </div>
+            
+
+            <!-- Telefono -->
+            <div class="field">
+              <input
+                class="field__input"
+                type="text"
+                required="required"
+                id="telefono"
+                name="telefono"
+                placeholder="{{ 'upango.ficha-producto-exportar.formulario.telefono-ph' | t }}"
+              >
+              <label class="field__label" for="telefono">
+                {{- 'upango.ficha-producto-exportar.formulario.telefono' | t -}}
+              </label>
+            </div>
+          
+
+            <!-- Email -->
+            <div class="field">
+              <input
+                class="field__input"
+                type="email"
+                required="required"
+                id="email"
+                name="email"
+                placeholder="{{ 'upango.ficha-producto-exportar.formulario.email-ph' | t }}"
+              >
+              <label class="field__label" for="email">
+                {{- 'upango.ficha-producto-exportar.formulario.email' | t -}}
+              </label>
+            </div>
+            
+
+            <!-- URL -->
+            <div class="field">
+              <input
+                class="field__input"
+                type="text"
+                required="required"
+                id="url_web"
+                name="url_web"
+                placeholder="{{ 'upango.ficha-producto-exportar.formulario.url-ph' | t }}"
+              >
+              <label class="field__label" for="url_web">
+                {{- 'upango.ficha-producto-exportar.formulario.url' | t -}}
+              </label>
+            </div>
+            
+            </div>
+          {% comment %} Cambie input por button para que se apliquen los estilos de Shopify correctamente, volver a input si es necesario {% endcomment %}
+          <div style="padding-top: 2rem; display: flex; justify-content: center;"> 
+          <button id="submitButtonExportarFicha" class="button button--primary">
+            {{ 'upango.ficha-producto-exportar.formulario.submit' | t }}
+          </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </modal-dialog>
+  <script>
+    let producto_info = {
+      content: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.content' | t }}",
+        value: {{ product.content | json }}
+      },
+      created_at: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.created_at' | t }}",
+        value: {{ product.created_at | json }}
+      },
+      description: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.description' | t }}",
+        value: {{ product.description | json }}
+      },
+      imagen: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.imagen' | t }}",
+        value: "{{ product.featured_image.src | image_url }}"
+      },
+      handle: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.handle' | t }}",
+        value: "{{ product.handle }}"
+      },
+      id: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.id' | t }}",
+        value: "{{ product.id }}"
+      },
+      published_at: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.published_at' | t }}",
+        value: {{ product.published_at | json }}
+      },
+      title: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.title' | t }}",
+        value: "{{ product.title }}"
+      },
+      type: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.type' | t }}",
+        value: "{{ product.type }}"
+      },
+      url: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.url' | t }}",
+        value: "{{ canonical_url }}"
+      },
+      vendor: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.vendor' | t }}",
+        value: "{{ product.vendor }}"
+      },
+      //Metafield
+      referencia: {
+        label: "{{ 'upango.ficha-producto-exportar.datos_producto.referencia' | t }}",
+        value: "{{ product.metafields.upng.referencia.value }}"
+      },
+
+      options_with_values: {{ product.options_with_values | json }},
+
+      product: {{ product | json }},
+
+      variantes: [
+        {% for variante in product.variants %}
+          {
+            available: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.available' | t }}",
+              value: {{  variante.available | json}}
+            },
+            id: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.id' | t }}",
+              value: "{{  variante.id }}"
+            },
+            barcode: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.barcode' | t }}",
+              value: "{{  variante.barcode }}"
+            },
+            sku: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.sku' | t }}",
+              value: "{{ variante.sku }}"
+            },
+            url: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.url' | t }}",
+              value: "{{ variante.url }}"
+            },
+            title: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.title' | t }}",
+              value: "{{ variante.title }}"
+            },
+            price: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.price' | t }}",
+              value: "{{ variante.price }}"
+            },
+            stock: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.stock' | t }}",
+              value: "{{ variante.inventory_quantity }}"
+            },
+            weight: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.weight' | t }}",
+              value: "{{ variante.weight }}"
+            },
+            incoming: {
+              label: "{{ 'upango.ficha-producto-exportar.datos_producto.variantes.incoming' | t }}",
+              value: "{{ variante.incoming }}"
+            }
+          }
+          {% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ],
+    };
+
+    const shop = "{{ shop.domain }}";
+    const locales = {
+      alert_ok: "{{ 'upango.ficha-producto-exportar.formulario.alert_ok' | t }}",
+      alert_respuesta_mal: "{{ 'upango.ficha-producto-exportar.formulario.alert_respuesta_mal' | t }}",
+      alert_fallo: "{{ 'upango.ficha-producto-exportar.formulario.alert_fallo' | t }}",
+    };
+  </script>
+  <script src="{{ 'upng-exportar-ficha-producto.js' | asset_url }}" defer></script>
+{%- endfor -%}

@@ -1,0 +1,85 @@
+{% comment %}
+  modal form
+
+  It needs to be oppened by a modal-opener. Sample:
+
+  <modal-opener class="no-js-hidden" data-modal="{{modal_id }}">
+    <button class="button-open-modal button button--full-width button--secondary">{{ 'upango.modal.open' | t }}</button>
+  </modal-opener>
+
+  Accepts:
+  - modal_id: {String} Modal id. Use same value as the data-modal attribute from the modal-opener element.
+  - posventa_type: {String} pedidos | facturas | albaranes
+
+  Usage:
+  {% render 'upng-posventa-modal', modal_id: 'SimpleForm', posventa_type: 'pedidos' %}
+{% endcomment %}
+{{ 'upango-modal.css' | asset_url | stylesheet_tag }}
+<modal-dialog id="{{ modal_id }}" class="upng-popup-modal">
+  <div
+    role="dialog"
+    aria-label="LABEL PRUEBA"
+    aria-modal="true"
+    class="upng-popup-modal__content upng-mispedidos"
+    tabindex="-1"
+  >
+    {% comment %} inicio -  X  {% endcomment %}
+    <button
+      id="ModalClose-{{ card_product.id }}"
+      type="button"
+      class="upng-popup-modal__toggle"
+      aria-label="{{ 'accessibility.close' | t }}"
+    >
+      {% render 'icon-close' %}
+    </button>
+    {% comment %} fin -  X  {% endcomment %}
+    <div class="simple-pop-modal__content-info">
+      <div class="upng-modal-header center">
+        <p class="h2">
+          {% if posventa_type == 'pedidos' %}
+            {{ 'upango.posventa.pedidos.detalle.detalle_del_pedido' | t }}
+          {% elsif posventa_type == 'facturas' %}
+            {{ 'upango.posventa.facturas.detalle.detalle_de_factura' | t }}
+          {% endif %}
+        </p>
+      </div>
+      <div class="simple-modal-content upng-table-micuenta" id="simple-modal-content-{{ modal_id }}">
+        <table id="lineas-posventa-table" class="upng-posventa-table">
+          <thead>
+            {% if posventa_type == 'pedidos' %}
+              <tr>
+                <th>{{ 'upango.posventa.pedidos.detalle.nombre' | t }}</th>
+                <th>{{ 'upango.posventa.pedidos.detalle.referencia' | t }}</th>
+                <th>{{ 'upango.posventa.pedidos.detalle.formato' | t }}</th>
+                <th>{{ 'upango.posventa.pedidos.detalle.cantidad' | t }}</th>
+                <th>{{ 'upango.posventa.pedidos.detalle.precio' | t }}</th>
+                <th>{{ 'upango.posventa.pedidos.detalle.iva' | t }}</th>
+                <th>{{ 'upango.posventa.pedidos.detalle.total' | t }}</th>
+              </tr>
+            {% elsif posventa_type == 'facturas' %}
+              <tr>
+                <th>{{ 'upango.posventa.facturas.detalle.nombre' | t }}</th>
+                <th>{{ 'upango.posventa.facturas.detalle.referencia' | t }}</th>
+                <th>{{ 'upango.posventa.facturas.detalle.formato' | t }}</th>
+                <th>{{ 'upango.posventa.facturas.detalle.cantidad' | t }}</th>
+                <th>{{ 'upango.posventa.facturas.detalle.precio' | t }}</th>
+                <th>{{ 'upango.posventa.facturas.detalle.iva' | t }}</th>
+                <th>{{ 'upango.posventa.facturas.detalle.total' | t }}</th>
+              </tr>
+            {% endif %}
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="pt-3 center">
+        {% comment %}
+          <button type="button" class="link button-label" id="ModalClose-{{ modal_id }}">
+            {% if posventa_type == 'pedidos' %}
+              Volver a pedidos
+            {% endif %}
+          </button>
+        {% endcomment %}
+      </div>
+    </div>
+  </div>
+</modal-dialog>

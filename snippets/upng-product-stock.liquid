@@ -1,0 +1,95 @@
+{% comment %}
+  Renders product stock info
+
+  Accepts:
+  - variant: {Object} product variant.
+  - show_inventory_quantity (bool): Show inventory quantity
+  - inventory_threshold: Stock limit alert
+  - short_text: (bool) show short text
+
+  Usage:
+  {% render 'upng-product-stock', variant: variant, show_inventory_quantity: true, short_text: true %}
+{% endcomment %}
+{% if customer.b2b? or settings.who_can_buy == 'every_customer' %}
+  {% # No mostramos stock a variantes sin precio o a consultar (sincronizadas con precio muy alto para representarlas) %}
+  {%- unless variant.price == settings.precio_consultar -%}
+    <div
+      class="product__inventory no-js-hidden{% if variant.inventory_management != 'shopify' %} visibility-hidden{% endif %}"
+      id="Inventory-{{ variant.id }}"
+      role="status"
+    >
+      {%- if variant.inventory_management == 'shopify' -%}
+        {% assign stockIconColor = '' %}
+        {% assign stock_message = '' %}
+
+        {% # THERE IS STOCK %}
+        {%- if variant.inventory_quantity > 0 -%}
+          {% # STOCK LEVEL ALERT WARNING %}
+          {%- if inventory_threshold and variant.inventory_quantity <= inventory_threshold -%}
+            {% assign stockIconColor = 'rgb(238,148,65)' -%}
+            {%- # Naranja %}
+            {%- if show_inventory_quantity -%}
+              {% capture stock_message %}
+            {{- 'products.product.inventory_low_stock_show_count' | t: quantity: variant.inventory_quantity -}}
+            {% endcapture %}
+            {%- else -%}
+              {% capture stock_message %}
+            {{- 'products.product.inventory_low_stock' | t -}}
+            {% endcapture %}
+            {%- endif -%}
+            {% # NO STOCK LEVEL ALERT WARNING %}
+          {%- else -%}
+            {% assign stockIconColor = 'rgb(62,214,96)' -%}
+            {%- # Verde %}
+            {%- if show_inventory_quantity -%}
+              {% capture stock_message %}
+            {{- 'products.product.inventory_in_stock_show_count' | t: quantity: variant.inventory_quantity -}}
+            {% endcapture %}
+            {%- else -%}
+              {%- if short_text %}
+                {% capture stock_message %}
+              {{- 'products.product.inventory_in_stock-short' | t -}}
+              {% endcapture %}
+              {%- else -%}
+                {% capture stock_message %}
+              {{- 'products.product.inventory_in_stock' | t -}}
+              {% endcapture %}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- else -%}
+          {% # THERE IS NO STOCK %}
+          {%- if variant.inventory_policy == 'continue' -%}
+            {% # BUT CUSTOMERS CAN BUY WITHOUT STOCK %}
+            {% assign stockIconColor = 'rgb(54, 162, 216)' -%}
+            {%- # azul %}
+            {%- if short_text %}
+              {% capture stock_message %}
+            {{- 'products.product.inventory_out_of_stock_continue_selling-short' | t: out_of_stock_delivery_days: settings.out_of_stock_delivery_days -}}
+            {% endcapture %}
+            {%- else -%}
+              {% capture stock_message %}
+            {% #TODO: Pasar a un metafield, constante o algo %}
+            {{- 'products.product.inventory_out_of_stock_continue_selling' | t: out_of_stock_delivery_days: settings.out_of_stock_delivery_days -}}
+            {% endcapture %}
+            {%- endif -%}
+          {%- else -%}
+            {% # AND CUSTOMERS CAN NOT BUY %}
+            {% assign stockIconColor = 'rgb(200,200,200)' -%}
+            {%- # gris %}
+            {% capture stock_message %}
+          {{- 'products.product.inventory_out_of_stock' | t -}}
+          {% endcapture %}
+          {%- endif -%}
+        {%- endif -%}
+
+        {% # STOCK ICON %}
+        <svg width="15" height="15" aria-hidden="true">
+          <circle cx="7.5" cy="7.5" r="6" stroke="rgb(255, 255, 255)" stroke-width="1" fill="{{ stockIconColor }}"/>
+        </svg>
+        {% # STOCK MESSAGE %}
+        <p>{{ stock_message }}</p>
+      {%- endif -%}
+    </div>
+  {%- endunless -%}
+{%- endif -%}

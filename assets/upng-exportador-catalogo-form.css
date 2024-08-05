@@ -1,0 +1,203 @@
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Estilos para selects */
+select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Estilos para checkboxes */
+.form-check {
+    display: flex;
+    align-items: center;
+}
+
+.form-check label {
+    margin-right: 10px;
+}
+
+.form-check input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* Estilos para acciones del formulario */
+.form-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.custom-dropdown {
+    display: flex;
+    margin-top: 5px;
+    flex-wrap: wrap;
+}
+
+.dropdown {
+    position: relative;
+    /* margin-right: 10px; */
+    width: 100%;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 100%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    max-height: 200px;
+    /* Establece la altura máxima que prefieras */
+    overflow-y: auto;
+}
+
+.dropdown-content select {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 10px;
+}
+
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    /* Ajusta según sea necesario */
+    overflow-y: auto;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.checkbox-label {
+    margin-left: 2px;
+}
+
+.checkbox-todo {
+    margin-right: 10px;
+    display: flex;
+}
+
+.button--primary {
+    min-width: 30rem !important;
+    background: black !important;
+    color: white !important;
+    border: none !important;
+    transition: none !important;
+    margin-bottom: 20px;
+  }
+
+  .select__select {
+    font-size: 1.3rem;
+    line-height: calc(1 + 0.5 / var(--font-body-scale));
+    letter-spacing: 0.04rem;
+  }
+
+
+#select-container{
+    align-items: center;
+}
+
+@media screen and (max-width: 749px) {
+    #select-container{
+        flex-direction: column;
+    }
+
+    .custom-dropdown{
+        row-gap: 10px;
+    }
+}
+
+@media screen and (min-width: 750px) {
+    #select-container{
+        flex-direction: row;
+        align-items: flex-start;
+        row-gap: 20px;
+        display: flex; 
+        flex-direction: column;
+    }
+
+    #formularioExportarCatalogo{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .contenedor-opciones{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .form-group{
+        column-gap: 5px;
+    }
+}
+
+.dropdown-btn{
+
+    border-radius: 0px;
+    box-sizing: border-box;
+    
+    /* Style */
+    border: 2px solid rgba(190, 185, 179, 1);
+    background: var(--button-background);
+    color: var(--button-color);
+    font-size: 24px;
+    cursor: pointer;
+    font-size: large;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    padding: 10px;
+    padding-left: 20px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    max-height: 200px;
+    /* Establece la altura máxima que prefieras */
+    overflow-y: auto;
+}
+
+.dropdown-content select {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 10px;
+}
+
+input[type="text"] {
+    width: 300px;
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+    border-color: black;
+    box-shadow: 0 0 8px grey;
+    outline: none;
+}
+
+input[type="text"]::placeholder {
+    color: #aaa;
+}

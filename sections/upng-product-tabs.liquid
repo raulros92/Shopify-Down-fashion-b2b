@@ -1,0 +1,291 @@
+{{ 'component-tab.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'tab.js' | asset_url }}" defer></script>
+{% render 'section-style' 
+    section_id:section.id, 
+    padding_top:section.settings.padding_top,
+    padding_bottom:section.settings.padding_bottom
+  %}
+{%if section.blocks.size > 0%}
+<div class="tabcomponent-product-section section-container color-{{ section.settings.color_scheme }} gradient no-js-hidden">
+  <div class="tabcomponent__inner section-wrapper section-{{ section.id }}-padding isolate{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    <tab-component class="page-width tab--{{ section.settings.direction }} tab--{{ section.settings.style }}">
+        <div class="tabcomponent__nav overflow-hidden no-js-hidden">
+            <ul class="tabnav__scroller list-unstyled" role="tablist" aria-labelledby="tabnav-product">
+                {% for block in section.blocks %}
+                <li><button id="tab-{{ block.id }}" role="tab" type="button" class="tabnav__tab"  aria-controls="tabpanel-{{block.id}}" aria-selected="{{block.settings.active}}">
+                    {{block.settings.label}}
+                </button></li>              
+                {% endfor %}
+              </ul>
+        </div>
+        <div class="tabcomponent__panel">
+        {% for block in section.blocks %}
+            <div id="tabpanel-{{ block.id }}" role="tabpanel" tabindex="0" aria-labelledby="tab-{{block.id}}" {% if block.settings.active == false %}hidden=""{%endif%}>
+                {%- case block.type -%}
+                {% when 'description' %}
+                    {{product.description}}
+                {% when 'characteristic' %}
+                    <div class="characteristic">
+                      <div styles="width: 100%">
+                        <img src="{{ product.metafields.upng.croquis | image_url: width: 400 }}" width= "400" height= "400" alt="" class="mainImage" style="width: fit-content">
+                      </div>
+                      <!-- <div styles="width: 50%">
+                        <br> - Botón de presión oculto
+                        <br> - Abertura en costados.
+                        <br> - 2 bolsillos laterales.
+                        <br> - Cinturón para ajustar.
+                        <br> - Largo aprox.: 69cm.
+                        <br> - M2: SEMI AJUSTADA.
+                      </div> -->
+                    </div>
+                {% when 'size_guide' %}
+                  <div >
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>MEDIDA (cm)</th>
+                          <th>XS</th>
+                          <th>S</th>
+                          <th>M</th>
+                          <th>L</th>
+                          <th>XL</th>
+                          <th>XXL</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>PECHO</td>
+                          <td>46</td>
+                          <td>50</td>
+                          <td>54</td>
+                          <td>58</td>
+                          <td>62</td>
+                          <td>66</td>
+                        </tr>
+                        <tr>
+                          <td>CINTURA</td>
+                          <td>44</td>
+                          <td>48</td>
+                          <td>52</td>
+                          <td>56</td>
+                          <td>60</td>
+                          <td>64</td>
+                        </tr>
+                        <tr>
+                          <td>CADERA</td>
+                          <td>50</td>
+                          <td>54</td>
+                          <td>58</td>
+                          <td>62</td>
+                          <td>66</td>
+                          <td>70</td>
+                        </tr>
+                        <tr>
+                          <td>LARGO ESPALDA</td>
+                          <td>66.5</td>
+                          <td>68</td>
+                          <td>69.5</td>
+                          <td>71</td>
+                          <td>72.5</td>
+                          <td>74</td>
+                        </tr>
+                        <tr>
+                          <td>LARGO CINTURON</td>
+                          <td>51</td>
+                          <td>53</td>
+                          <td>55</td>
+                          <td>57</td>
+                          <td>59</td>
+                          <td>61</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    </div>
+                {% endcase %}
+            </div>
+        {%- endfor -%}     
+        </div> 
+    </tab-component>
+</div>
+</div>
+{% endif %}
+{% comment %} <style>
+  .custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin: 20px 0;
+  }
+  .custom-table th, .custom-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+  }
+  .custom-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+</style> {% endcomment %}
+{% schema %}
+{
+    "name": "t:sections.upng-product-tabs.name",
+    "tag": "section",
+    "class": "section",
+    "limit": 1,
+    "disabled_on": {
+        "groups": [
+          "header",
+          "footer"
+        ]
+    },
+    "settings": [
+        {
+            "type": "text",
+            "id": "tab",
+            "default":"product_tab",
+            "label": "t:sections.upng-product-tabs.settings.class.label",
+            "info": "t:sections.upng-product-tabs.settings.class.note"
+        },
+        {
+            "type": "select",
+            "id": "direction",
+            "options": [
+              {
+                "value": "horizontal",
+                "label": "t:sections.all.direction.options__1.label"
+              },
+              {
+                "value": "vertical",
+                "label": "t:sections.all.direction.options__2.label"
+              }
+            ],
+            "default": "horizontal",
+            "label": "t:sections.all.direction.label"
+          },
+          {
+            "type": "select",
+            "id": "style",
+            "options": [
+              {
+                "value": "tablink",
+                "label": "t:sections.upng-product-tabs.settings.style.options__1.label"
+              },
+              {
+                "value": "tabbutton",
+                "label": "t:sections.upng-product-tabs.settings.style.options__2.label"
+              },
+              {
+                "value": "tabbed",
+                "label": "t:sections.upng-product-tabs.settings.style.options__3.label"
+              }
+            ],
+            "default": "tablink",
+            "label": "t:sections.upng-product-tabs.settings.style.label"
+          },
+          {
+            "type": "header",
+            "content": "t:sections.all.padding.section_padding_heading"
+          },
+
+          {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_top",
+            "default": 48
+          },
+          {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_bottom",
+            "default": 48
+          }
+    ],
+    "blocks": [
+       
+        {
+            "type": "description",
+            "name": "t:sections.upng-product-tabs.block.settings.description",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "label",
+                    "default":"Descripción",
+                    "label": "t:sections.upng-product-tabs.block.label"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "active",
+                    "default":true,
+                    "label": "t:sections.upng-product-tabs.block.active"
+                }
+            ]
+          },
+          {
+            "type": "size_guide",
+            "name": "t:sections.upng-product-tabs.block.settings.size_guide",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "label",
+                    "default":"Guía de tallas",
+                    "label": "t:sections.upng-product-tabs.block.label"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "active",
+                    "default":false,
+                    "label": "t:sections.upng-product-tabs.block.active"
+                }
+            ]
+          },
+          {
+            "type": "characteristic",
+            "name": "t:sections.upng-product-tabs.block.settings.characteristics",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "label",
+                    "default":"Croquis y Características",
+                    "label": "t:sections.upng-product-tabs.block.label"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "active",
+                    "default":false,
+                    "label": "t:sections.upng-product-tabs.block.active"
+                }
+            ]
+          }
+        
+      ],
+      "presets": [
+        {
+            "name": "t:sections.upng-product-tabs.name",
+            "blocks": [
+                {
+                  "type": "description"
+                },
+                {
+                  "type": "characteristic"
+                },
+                {
+                  "type": "size_guide"
+                }
+              ]
+        }
+      ]
+    
+}
+{% endschema %}

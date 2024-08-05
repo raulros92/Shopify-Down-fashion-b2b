@@ -1,0 +1,38 @@
+@media screen and (min-width: 749px) {
+    .contenedor-mis-direcciones{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0px 35%;
+    }
+}
+
+.my-data-section {
+    display: flex;
+    /*
+    width: 75rem;
+    padding: 3.9375rem 0rem;
+    */
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 3.125rem;
+    flex-wrap: wrap;
+}
+
+ul.my-data{
+    width: 32rem;
+    padding: 3.125rem;
+    align-items: center;
+    gap: 0.625rem;
+    flex-shrink: 0;
+    border: 1px solid #000;
+    text-decoration: none;
+    background: white !important;
+    list-style: none !important;
+    list-style-type: none !important;
+    text-align: center;
+}
+
+.section-misdirecciones{
+    padding-bottom: 100px;
+}

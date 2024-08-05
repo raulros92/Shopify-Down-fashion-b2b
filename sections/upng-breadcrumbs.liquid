@@ -1,0 +1,130 @@
+{% # TODO: Limpieza de estilos y de casuísticas que no sean la de product %}
+{{ 'upng-breadcrumb.css' | asset_url | stylesheet_tag }}
+
+{%- unless template == 'index' or template == 'cart' or template == 'list-collections' or template == '404' -%}
+  {%- assign t = template | split: '.' | first -%}
+<div class="page-width">
+  <nav class="breadcrumbs" role="navigation" aria-label="breadcrumbs">
+    <ol class="breadcrumbs__list">
+      <li class="breadcrumbs__item">
+        <a href="/">{{ shop.name }}</a>
+      </li>
+      {%- case t -%}
+        {%- when 'page' -%}
+          {% # Comprobamos si es una página de "mi cuenta" para mostrar el enlace %}
+          {%- for link in linklists['my-account-menu'].links -%}
+            {%- if link.type == 'page_link' -%}
+              <!-- {{ link.handle }} == {{ page.handle }} -->
+              {%- if link.handle == page.handle -%}
+                {% # Buscar la página de mi cuenta %}
+                {% assign mi_cuenta_page = settings.customer_account_custom_page %}
+                {% if mi_cuenta_page != blank %}
+                  <li class="breadcrumbs__item">
+                    <a href="{{ mi_cuenta_page.url }}">
+                      {{ mi_cuenta_page.title }}
+                    </a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          <li class="breadcrumbs__item">
+            <a href="{{ collection.url }}">{{ page.title }}</a>
+          </li>
+        {%- when 'product' -%}
+          {% # Recorremos la estructura del menu principal %}
+          {%- for link in linklists['main-menu'].links -%}
+            {% # Solo el primer elemento "Productos" %}
+            {%- if forloop.first -%}
+              {%- if link.links -%}
+                {%- for childlink in link.links -%}
+                  {% # Comprobamos si pertenece a las colecciones de segundo nivel %}
+                  {%- if childlink.type == 'collection_link' -%}
+                    {% for collection in product.collections %}
+                      {% if collection.handle == childlink.handle %}
+                        <li class="breadcrumbs__item">
+                          {{ collection.title | link_to: collection.url }}
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+
+                  {%- if childlink.links != blank -%}
+                    {%- for grandchildlink in childlink.links -%}
+                      {% # Comprobamos si pertenece a las colecciones de tercer nivel %}
+                      {%- if childlink.type == 'collection_link' -%}
+                        {% for collection in product.collections %}
+                          {% if collection.handle == grandchildlink.handle %}
+                            <li class="breadcrumbs__item">
+                              {{ collection.title | link_to: collection.url }}
+                            </li>
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    {%- endfor -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+          <li class="breadcrumbs__item">
+            <a href="{{ product.url }}" aria-current="page">{{ product.title }}</a>
+          </li>
+
+        {%- when 'collection' and collection.handle -%}
+          {%- if current_tags -%}
+            <li class="breadcrumbs__item">
+              {{ collection.title | link_to: collection.url }}
+            </li>
+            <li class="breadcrumbs__item">
+              {%- capture tag_url -%}{{ collection.url }}/{{ current_tags | join: "+" }}{%- endcapture -%}
+              <a href="{{ tag_url }}" aria-current="page">{{ current_tags | join: ' + ' }}</a>
+            </li>
+          {%- else -%}
+            <li class="breadcrumbs__item">
+              <a href="{{ collection.url }}" aria-current="page">{{ collection.title }}</a>
+            </li>
+          {%- endif -%}
+        {%- when 'blog' -%}
+          {%- if current_tags -%}
+            <li class="breadcrumbs__item">
+              {{ blog.title | link_to: blog.url }}
+            </li>
+            <li class="breadcrumbs__item">
+              {%- capture tag_url -%}{{ blog.url }}/tagged/{{ current_tags | join: "+" }}{%- endcapture -%}
+              <a href="{{ tag_url }}" aria-current="page">{{ current_tags | join: ' + ' }}</a>
+            </li>
+          {%- else -%}
+            <li class="breadcrumbs__item">
+              <a href="{{ blog.url }}" aria-current="page">{{ blog.title }}</a>
+            </li>
+          {%- endif -%}
+        {%- when 'article' -%}
+          <li class="breadcrumbs__item">
+            {{ blog.title | link_to: blog.url }}
+          </li>
+          <li class="breadcrumbs__item">
+            <a href="{{ article.url }}" aria-current="page">{{ article.title }}</a>
+          </li>
+        {%- else -%}
+          <li class="breadcrumbs__item">
+            <a href="{{ request.path }}" aria-current="page">{{ page_title }}</a>
+          </li>
+      {%- endcase -%}
+    </ol>
+  </nav>
+</div>
+{%- endunless -%}
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "tag": "div",
+  "limit": 1,
+   "class":"breadcrumb-section",
+  "presets": [
+    {
+      "name": "Breadcrumbs"
+    }
+  ]
+}
+{% endschema %}

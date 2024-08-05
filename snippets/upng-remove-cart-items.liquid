@@ -1,0 +1,11 @@
+<modal-opener data-modal="#RemoveCartItemsModal">
+  <cart-remove-all-items-button>
+    <button
+      class="button button--tertiary button-removecart"
+      type="button"
+      aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}"
+    >
+      {% render 'icon-remove' %}
+    </button>
+  </cart-remove-all-items-button>
+</modal-opener>

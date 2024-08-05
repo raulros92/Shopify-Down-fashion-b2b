@@ -1,0 +1,18 @@
+.compare-button-container {
+  position: fixed;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  bottom: 1%;
+  z-index: 2;
+}
+
+.compare-elems {
+  background-color: #eaeaea;
+  display: flex;
+  gap: 1em;
+  padding: 1em;
+  border-radius: 1em;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  align-items: center;
+}

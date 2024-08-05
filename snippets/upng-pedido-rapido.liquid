@@ -1,0 +1,20 @@
+{% if customer %}
+{% if product.options.size == 2 %}
+  <modal-opener class="no-js-hidden" data-modal="#pedido-rapido-modal">
+    <button class="button-solicitar-alta button button--full-width button--secondary">
+      {%- assign form_type = 'pedido_rapido' -%}
+      <p>{{ 'products.product.quick-order' | t }}</p>
+    </button>
+  </modal-opener>
+  {% render 'upng-modal-form', form_id: 'pedido-rapido-modal', form_type: form_type, block: block, form_product: product %}
+{% endif %}
+{% else %}
+
+  <modal-opener class="no-js-hidden" data-modal="#pedido-rapido-modal">
+    <button class="button-solicitar-alta button button--full-width button--secondary">
+      {%- assign form_type = 'alta' -%}
+      <p>{{ 'products.product.new-customer' | t }}</p>
+    </button>
+  </modal-opener>
+  {% render 'upng-modal-form', form_id: 'pedido-rapido-modal', form_type: form_type, block: block, form_product: product %}
+{% endif %}

@@ -1,0 +1,15 @@
+{% # Cliente con Recargo de equivalencia: {{customer.current_company.metafields.upng.zona_fiscal}} == "ES_RE" %}
+{% assign zona_fiscal_downcase = customer.current_company.metafields.upng.zona_fiscal | downcase %}
+{% if zona_fiscal_downcase == 'es_re' %}
+  {% assign importe_recargo_equivalencia_total = 0 %}
+  {% for item in cart.items %}
+    {% # Compruebo si tiene un producto de tipo impuestos y en ese caso lo borramos y recargamos página %}
+    {% if item.product.tags contains 'IMPUESTOS' %}
+      <script>
+        window.location.href = '{{ item.url_to_remove }}';
+      </script>
+    {% endif %}
+  {% endfor %}
+  <input id="re_variant_id" value="{{ settings.re_product.variants.first.id }}" type="hidden">
+  <script src="{{ 'upango-re.js' | asset_url }}" defer></script>
+{% endif %}

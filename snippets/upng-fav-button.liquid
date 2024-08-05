@@ -1,0 +1,20 @@
+{%- if settings.favorite_products and customer -%}
+  {% comment %} <script src="{{ 'upango-favoritos.js' | asset_url }}" defer="defer"></script> {% endcomment %}
+  {% assign claseFavoritos = 'btn-fav-inactivo' %}
+  {% assign favoritosArray = customer.metafields.upng.favoritos
+    | replace: '"', ''
+    | replace: '[', ''
+    | replace: ']', ''
+    | split: ','
+  %}
+  {% assign gidProduct = 'gid://shopify/Product/' | append: fav_product.id %}
+  {% if favoritosArray contains gidProduct %}
+    {% assign claseFavoritos = 'btn-fav-activo' %}
+  {% endif %}
+  <fav-button id="Fav-{{ section.id }}" class="fav-button quick-add-hidden" {{ block.shopify_attributes }}>
+    {% comment %} {{ fav_product | json }} {% endcomment %}
+    <button class="btn-addremovefavoritos {{ claseFavoritos }}" data-productid="{{ fav_product.id }}">
+      {% render 'icon-heart' %}
+    </button>
+  </fav-button>
+{%- endif -%}

@@ -1,0 +1,239 @@
+{% comment %}
+  Renders a standard dropdown style menu for the header.
+
+  Usage:
+  {% render 'header-dropdown-menu' %}
+{% endcomment %}
+
+<nav class="header__inline-menu">
+  <ul class="list-menu list-menu--inline" role="list">
+    {%- for link in section.settings.menu.links -%}
+      <li>
+        {%- if link.links != blank -%}
+          <header-menu>
+            <details id="Details-HeaderMenu-{{ forloop.index }}">
+              <summary
+                id="HeaderMenu-{{ link.handle }}"
+                class="header__menu-item list-menu__item link focus-inset"
+              >
+                <span
+                  {%- if link.child_active %}
+                    class="header__active-menu-item"
+                  {% endif %}
+                >
+                  {{- link.title | escape -}}
+                </span>
+                {% render 'icon-caret' %}
+              </summary>
+              <ul
+                id="HeaderMenu-MenuList-{{ forloop.index }}"
+                class="header__submenu list-menu list-menu--disclosure color-{{ section.settings.menu_color_scheme }} gradient caption-large motion-reduce global-settings-popup"
+                role="list"
+                tabindex="-1"
+              >
+                {%- for childlink in link.links -%}
+                  <li>
+                    {%- if childlink.links == blank -%}
+                      <a
+                        id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                        href="{{ childlink.url }}"
+                        class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if childlink.current %} list-menu__item--active{% endif %}"
+                        {% if childlink.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{ childlink.title | escape }}
+                      </a>
+                    {%- else -%}
+                      <details id="Details-HeaderSubMenu-{{ link.handle }}-{{ childlink.handle }}">
+                        <summary
+                          id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                          class="header__menu-item link link--text list-menu__item focus-inset caption-large"
+                        >
+                          <span>{{ childlink.title | escape }}</span>
+                          {% render 'icon-caret' %}
+                        </summary>
+                        <ul
+                          id="HeaderMenu-SubMenuList-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                          class="header__submenu list-menu motion-reduce"
+                        >
+                          {%- for grandchildlink in childlink.links -%}
+                            <li>
+                              <a
+                                id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                                href="{{ grandchildlink.url }}"
+                                class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if grandchildlink.current %} list-menu__item--active{% endif %}"
+                                {% if grandchildlink.current %}
+                                  aria-current="page"
+                                {% endif %}
+                              >
+                                {{ grandchildlink.title | escape }}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </details>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </details>
+          </header-menu>
+        {%- else -%}
+          {% comment %}
+            Mostrar o no mostrar el bloque/megamenú menu-colecciones-anidado o menu-imagenes-anidado en función de si el bloque esta activo, está establecido en el
+            personalizador y su valor text_number coincide con el index del elemento activo. Comprobación primero
+            y luego ejecución o no en función del valor booleano y de si se pulsa el link.
+          {% endcomment %}
+          <script src="{{ 'upango-headers-mega-menu-anidado.js' | asset_url }}" defer></script>
+
+          {% assign hay_megamenu = false %}
+          {% assign hay_megamenu_imagenes = false %}
+          {% assign hay_menu_imagenes = false %}
+          {%- assign loop_index_str = forloop.index | append: '' -%}
+          {%- for block in section.blocks -%}
+            {% if block.type == 'menu-colecciones-anidado' %}
+              {%- if block.settings.text_number == loop_index_str -%}
+                {% assign hay_megamenu = true %}
+              {% endif %}
+            {% endif %}
+            {% if block.type == 'menu-imagenes-anidado' %}
+              {%- if block.settings.text_number == loop_index_str -%}
+                {% assign hay_megamenu_imagenes = true %}
+              {% endif %}
+            {% endif %}
+            {% if block.type == 'menu-imagenes' %}
+              {%- if block.settings.text_number == loop_index_str -%}
+                {% assign hay_menu_imagenes = true %}
+              {% endif %}
+            {% endif %}
+          {%- endfor -%}
+
+          {%- if hay_megamenu -%}
+            <a
+              id="HeaderMenu-{{ link.handle }}"
+              href="#"
+              class="header__menu-item list-menu__item link link--text focus-inset"
+              {% if link.current %}
+                aria-current="page"
+              {% endif %}
+              onclick="openMegaMenu(event, {{ loop_index_str }}, 'megaMenuContainerDropdown-')"
+            >
+              <span
+                {%- if link.current %}
+                  class="header__active-menu-item"
+                {% endif %}
+              >
+                {{- link.title | escape -}}
+              </span>
+            </a>
+
+            <div id="megaMenuContainerDropdown-{{ loop_index_str }}" class="megaMenu" style="display: none;">
+              {%- for block in section.blocks -%}
+                {% if block.type == 'menu-colecciones-anidado' %}
+                  {%- if block.settings.text_number == loop_index_str -%}
+                    {%- render 'header-mega-menu-colecciones-anidado', block: block -%}
+                  {% endif %}
+                {% endif %}
+              {%- endfor -%}
+            </div>
+
+          {% elsif hay_megamenu_imagenes %}
+            <a
+              id="HeaderMenu-{{ link.handle }}"
+              href="#"
+              class="header__menu-item list-menu__item link link--text focus-inset"
+              {% if link.current %}
+                aria-current="page"
+              {% endif %}
+              onclick="openMegaMenu(event, {{ loop_index_str }}, 'megaMenuContainerDropdownImagenes-')"
+            >
+              <span
+                {%- if link.current %}
+                  class="header__active-menu-item"
+                {% endif %}
+              >
+                {{- link.title | escape -}}
+              </span>
+            </a>
+
+            <div id="megaMenuContainerDropdownImagenes-{{ loop_index_str }}" class="megaMenu" style="display: none;">
+              {%- for block in section.blocks -%}
+                {% if block.type == 'menu-imagenes-anidado' %}
+                  {%- if block.settings.text_number == loop_index_str -%}
+                    {%- render 'header-mega-menu-imagenes-anidado', block: block -%}
+                  {% endif %}
+                {% endif %}
+              {%- endfor -%}
+            </div>
+
+          {% elsif hay_menu_imagenes %}
+            <a
+              id="HeaderMenu-{{ link.handle }}"
+              href="#"
+              class="header__menu-item list-menu__item link link--text focus-inset"
+              {% if link.current %}
+                aria-current="page"
+              {% endif %}
+              onclick="openMegaMenu(event, {{ loop_index_str }}, 'menuImagenesContainerDropdown-')"
+            >
+              <span
+                {%- if link.current %}
+                  class="header__active-menu-item"
+                {% endif %}
+              >
+                {{- link.title | escape -}}
+              </span>
+            </a>
+
+            <div id="menuImagenesContainerDropdown-{{ loop_index_str }}" class="megaMenu" style="display: none;">
+              {%- for block in section.blocks -%}
+                {% if block.type == 'menu-imagenes' %}
+                  {%- if block.settings.text_number == loop_index_str -%}
+                    {%- render 'header-mega-menu-image', block: block -%}
+                  {% endif %}
+                {% endif %}
+              {%- endfor -%}
+            </div>
+
+          {%- else -%}
+            <a
+              id="HeaderMenu-{{ link.handle }}"
+              href="{{ link.url }}"
+              class="header__menu-item list-menu__item link link--text focus-inset"
+              {% if link.current %}
+                aria-current="page"
+              {% endif %}
+            >
+              <span
+                {%- if link.current %}
+                  class="header__active-menu-item"
+                {% endif %}
+              >
+                {{- link.title | escape -}}
+              </span>
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+
+  <div id="contenedorRendersMegamenu"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Seleccionar todos los divs con la clase "megaMenu"
+      var megaMenus = document.querySelectorAll('.megaMenu');
+
+      // Seleccionar el contenedor donde se desea mover los divs
+      var contenedor = document.getElementById('contenedorRendersMegamenu');
+
+      // Iterar sobre todos los divs con la clase "megaMenu"
+      megaMenus.forEach(function (menu) {
+        // Mover el div al contenedor deseado
+        contenedor.appendChild(menu);
+      });
+    });
+  </script>
+</nav>

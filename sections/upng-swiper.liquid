@@ -1,0 +1,157 @@
+{% comment %} TODO: con data-nav-id asociamos el slider con su opción de menú{% endcomment %}
+<div class="main-slider" data-nav-id="{{ section.settings.nav_id }}">
+  <div
+    id="carousel-sections--{{ section.id }}"
+    class=" swiper-container verticle-animation"
+    allow-swipe
+    allow-transparent-header
+    cell-selector=".slideshow__slide"
+    role="region"
+    style="--background: 0 0 0 ; background-color: rgb(var(--background));--border-color: var(--text-color) / 0.15;"
+  >
+    <div class="swiper-wrapper">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.image -%}
+          {% comment %} Por defecto is-selected será el primer slide{% endcomment %}
+          <div class="swiper-slide{% if forloop.first %} is-selected{% endif %}" media-type="image" role="group">
+            <div
+              class="swiper-slide"
+              style="--content-over-media-content-max-width: 1200px; --content-over-media-gradient-overlay: linear-gradient(180deg, rgba(54, 54, 54, 0.2), rgba(4, 4, 4, 0.65) 100%); "
+            >
+              {% comment %} Link del slide en la configuración del block {% endcomment %}
+              <a
+                {% if block.settings.link %}
+                  href="{{ block.settings.link }}"
+                {% else %}
+                  role="link" aria-disabled="true"
+                {% endif %}
+                class="image_link"
+                ><picture class="main-slider__inner">
+                  {%- liquid
+                    assign height = block.settings.image.width | divided_by: block.settings.image.aspect_ratio | round
+                    if section.settings.image_behavior == 'ambient'
+                      assign sizes = '120vw'
+                      assign widths = '450, 660, 900, 1320, 1800, 2136, 2400, 3600, 7680'
+                    else
+                      assign sizes = '100vw'
+                      assign widths = '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
+                    endif
+                    assign fetch_priority = 'auto'
+                    assign custom_class = 'main-slider__bg'
+                    if section.index == 1
+                      assign fetch_priority = 'high'
+                    endif
+                  -%}
+                  {%- if forloop.first %}
+                    {{
+                      block.settings.image
+                      | image_url: width: 3840
+                      | image_tag:
+                        height: height,
+                        sizes: sizes,
+                        widths: widths,
+                        fetchpriority: fetch_priority,
+                        class: custom_class
+                    }}
+                  {%- else -%}
+                    {{
+                      block.settings.image
+                      | image_url: width: 3840
+                      | image_tag: loading: 'lazy', height: height, sizes: sizes, widths: widths, class: custom_class
+                    }}
+                  {%- endif -%}
+                </picture>
+              </a>
+              <div class="slideshow__slide-content">
+                <div class="prose">
+                  {% comment %} Link del slide en la configuración del block {% endcomment %}
+                  <p class="swiper-slide-title">{{- block.settings.slide_title | escape -}}</p>
+                  <div class="button-group">
+                    <a
+                      class="link"
+                      {% if block.settings.link %}
+                        href="{{ block.settings.link }}"
+                      {% else %}
+                        role="link" aria-disabled="true"
+                      {% endif %}
+                    >
+                      {{- block.settings.link_label | escape -}}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  <div class="swiper-scrollbar"></div>
+</div>
+
+{% comment %} TODO: Comprobar si las class shopify-section-group-index_slideshow_group shopify-section--slideshow swiper-slide sirven todas para algo y si no hacer limpieza{% endcomment %}
+{% schema %}
+{
+  "name": "t:sections.swiper.name",
+  "tag": "section",
+  "class": "shopify-section-group-index_slideshow_group shopify-section--slideshow swiper-slide",
+  "settings": [
+    {
+      "type": "text",
+      "id": "nav_id",
+      "label": "t:sections.swiper.settings.nav_id.label",
+      "info": "t:sections.swiper.settings.nav_id.info",
+      "default": "1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "t:sections.swiper.blocks.slide.name",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.swiper.blocks.slide.settings.image.label"
+        },
+        {
+          "type": "text",
+          "id": "slide_title",
+          "default": "Slide title",
+          "label": "t:sections.swiper.blocks.slide.settings.slide_title.label"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "default": "SHOW COLLECTION",
+          "label": "t:sections.swiper.blocks.slide.settings.link_label.label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.swiper.blocks.slide.settings.link.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.swiper.presets.name",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "custom.swiper"
+    ]
+  }
+}
+{% endschema %}

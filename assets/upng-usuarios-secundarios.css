@@ -1,0 +1,12 @@
+#usuariosSecundarios-table {
+  text-align: center;
+}
+
+#usuariosSecundarios-table input {
+  border: solid black 1px;
+}
+
+.checkbox-flex-column {
+  display: flex;
+  flex-direction: column;
+}

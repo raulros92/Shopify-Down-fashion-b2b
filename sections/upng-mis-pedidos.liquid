@@ -1,0 +1,144 @@
+{{ 'section-upng-myaccount-tables.css' | asset_url | stylesheet_tag }}
+{{ 'upng-alert.css' | asset_url | stylesheet_tag }}
+{{ 'upng-tag.css' | asset_url | stylesheet_tag }}
+
+{% # filtros %}
+<div class="upng-filtros upng-form flex flex-wrap justify-content-around center page-width">
+  <form class="posventa-form" id="posventa-pedidos-form" method="post">
+    <input type="hidden" name="companyId" value="{{ customer.current_company.id }}">
+    <div class="upng-fields">
+      <div class="field">
+        <input
+          class="field__input"
+          type="text"
+          autocomplete="numeroPedidoB2B"
+          id="numeroPedidoB2B"
+          name="numeroPedidoB2B"
+          spellcheck="false"
+          placeholder="{{ 'upango.posventa.pedidos.referencia_b2b' | t }}"
+        >
+        <label class="field__label" for="numeroPedidoB2B">{{ 'upango.posventa.pedidos.referencia_b2b' | t }}</label>
+      </div>
+      <div class="field">
+        <input
+          class="field__input"
+          type="text"
+          autocomplete="numeroPedidoERP"
+          id="numeroPedidoERP"
+          name="numeroPedidoERP"
+          spellcheck="false"
+          placeholder="{{ 'upango.posventa.pedidos.referencia_erp' | t }}"
+        >
+        <label class="field__label" for="numeroPedidoERP">{{ 'upango.posventa.pedidos.referencia_erp' | t }}</label>
+      </div>
+      <div class="field">
+        <input
+          autocomplete="fechaDesde"
+          type="date"
+          id="fechaDesde"
+          class="field__input"
+          name="fechaDesde"
+          spellcheck="false"
+          autocapitalize="off"
+          placeholder="{{ 'upango.posventa.pedidos.fecha_desde' | t }}"
+        >
+        {%- comment -%} <label class="field__label" for="fechaDesde">{{ 'upango.posventa.pedidos.fecha_desde' | t }}</label> {%- endcomment -%}
+      </div>
+      <div class="field">
+        <input
+          class="field__input"
+          type="date"
+          autocomplete="fechaHasta"
+          id="fechaHasta"
+          name="fechaHasta"
+          placeholder="{{ 'upango.posventa.pedidos.fecha_hasta' | t }}"
+        >
+        {%- comment -%}<label class="field__label" for="fechaHasta">{{ 'upango.posventa.pedidos.fecha_hasta' | t }}</label> {%- endcomment -%}
+      </div>
+      {% # TODO: Traducciones estados %}
+      <div class="field">
+        <select
+          class="select__select"
+          name="estado"
+        >
+          <option value="">{{ 'upango.posventa.pedidos.estado' | t }}</option>
+          <option value="PENDIENTE">{{ 'upango.posventa.pedidos.estado_pendiente' | t }}</option>
+          <option value="SERVIDO">{{ 'upango.posventa.pedidos.estado_servido' | t }}</option>
+        </select>
+        <label class="field__label" for="estado"></label>
+      </div>
+      <button type="submit" class="button button--full-width button--primary">
+        <span>{{ 'upango.posventa.pedidos.buscar' | t }}</span>{% render 'loading' %}
+      </button>
+    </div>
+  </form>
+</div>
+<div id="posventa-results">
+  {% # resultados %}
+  <p class="pt-3">
+    {{ 'upango.posventa.pedidos.resultados_begin' | t }}
+    <span id="numero-resultados-consulta-posventa">0</span> {{ 'upango.posventa.pedidos.resultados_end' | t }}
+  </p>
+
+  {% # inicio div tabla %}
+  <div class="upng-table-micuenta">
+    <table id="pedidos-table" class="upng-posventa-table">
+      <thead>
+        <tr>
+          {% # < th >{{ 'upango.posventa.pedidos.serie' | t }} </th > %}
+          <th>{{ 'upango.posventa.pedidos.referencia_pedido' | t }}</th>
+          <th>{{ 'upango.posventa.pedidos.fecha' | t }}</th>
+          <th>{{ 'upango.posventa.pedidos.estado' | t }}</th>
+          <th>{{ 'upango.posventa.pedidos.total' | t }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+{% # fin div tabla %}
+
+{% render 'upng-posventa-modal', modal_id: 'DetallePedidoModal', posventa_type: 'pedidos' %}
+
+<script>
+  {% # Deben estar todos los posibles codigos de error devuelvos por el desarrollo de posventa %}
+  const errorMessages = {
+    no_data: "{{ 'upango.posventa.codigos-error.no_data' | t }}",
+    error_general: "{{ 'upango.posventa.codigos-error.no_data' | t }}",
+    error_company_id_no_recuperado_de_shopify: "{{ 'upango.posventa.codigos-error.error_company_id_no_recuperado_de_shopify' | t }}",
+    error_datos_no_recibidos_de_form: "{{ 'upango.posventa.codigos-error.error_datos_no_recibidos_de_form' | t }}"
+  };
+
+  const theadTitles = {
+    serie:"{{ 'upango.posventa.pedidos.serie' | t }}",
+    referenciaPedido:"{{ 'upango.posventa.pedidos.referencia_pedido' | t }}",
+    fecha:"{{ 'upango.posventa.pedidos.fecha' | t }}",
+    estado:"{{ 'upango.posventa.pedidos.estado' | t }}",
+    total:"{{ 'upango.posventa.pedidos.total' | t }}"
+  };
+
+  const verDetalleText = "{{ 'upango.posventa.ver_detalle' | t }}";
+</script>
+<script src="{{ 'upango-posventa-pedidos.js' | asset_url }}" defer></script>
+<script src="{{ 'upango-posventa-commons.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "UPNG-mispedidos",
+  "tag": "section",
+  "class": "section-mispedidos page-width",
+  "limit": 1,
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "presets": [
+    {
+      "name": "UPNG mis pedidos"
+    }
+  ]
+}
+{% endschema %}

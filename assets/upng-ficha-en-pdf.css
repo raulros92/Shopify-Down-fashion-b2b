@@ -1,0 +1,62 @@
+.ficha-en-pdf-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.product-popup-modal__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.product-popup-modal__button .icon-download {
+    width: 16px; 
+    height: 16px; 
+    margin-left: 8px; 
+}
+
+.product-popup-modal__content__ficha-producto {
+    max-width: 600px;
+    margin: 9rem auto;
+    padding: 20px;
+}
+
+.product-popup-modal__toggle__ficha-producto {
+    background: none;
+    border: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.form-field__ficha-producto label {
+    display: block;
+    font-size: 1.5rem;
+}
+
+.form-field__ficha-producto input[type="text"],
+.form-field__ficha-producto input[type="email"],
+.form-field__ficha-producto input[type="url"],
+.form-field__ficha-producto textarea {
+    width: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1.5rem;
+}
+
+.form-field__ficha-producto textarea {
+    resize: none;
+    min-height: 100px;
+}
+
+/* Nuevos estilos para dispositivos móviles */
+@media screen and (max-width: 749px) {
+    .form-field__ficha-producto textarea#direccion {
+      width: 100%; /* Cambia el ancho del campo de dirección */
+    }
+  }

@@ -1,0 +1,40 @@
+{% comment %}
+  Selector de vistas en listados
+
+  Usage:
+  {% render 'upng-list-view-selector' %}
+{% endcomment %}
+
+<style>
+  .page-width.collection button.list-upng {
+    border: 0;
+    background: none;
+    width: max-content;
+  }
+
+  .list-group-upng.page-width.collection {
+    display: inline-flex;
+    padding: 0;
+    margin-left: 3.5rem;
+  }
+  .list-group-upng .mobile-facets__open svg {
+    width: 2.5rem;
+  }
+  @media screen and (min-width: 750px) {
+    .facets-container-drawer .product-count,
+    .product-count-vertical,
+    .product-count {
+      margin: 0 0 0.5rem 3.5rem;
+      /* column-gap: 6rem !important; */
+      gap: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+  }
+</style>
+
+<div class="list-group-upng page-width collection" data-color="azul">
+  <button class="list-upng mobile-facets__open boton-tabla" type="button">{% render 'icon-list-new' %}</button>
+  <button class="list-upng mobile-facets__open boton-mosaico" type="button">{% render 'icon-grid' %}</button>
+</div>

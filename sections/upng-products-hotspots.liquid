@@ -1,0 +1,184 @@
+{{ 'upng-hot-spots.css' | asset_url | stylesheet_tag }}
+{{ 'upng-product-hotspots.css' | asset_url | stylesheet_tag }}
+
+<div class="page-width section-{{ section.id }}-padding">
+  {% assign products = '' %}
+  <div class="product-hotspots-container">
+    <div class="hotspot-product-image-container">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'hotspot' %}
+            {% render 'upng-hot-spots', block: block %}
+            {% assign products = products | append: ',' | append: block.settings.hotspot_product.handle %}
+        {% endcase %}
+      {% endfor %}
+      <img src="{{ section.settings.product_hotspot_image | image_url: width: 1440 }}" width= "1440" height= "1080" loading="eager" alt="" class="mainImage">
+    </div>
+    {% assign products = products | split: ',' %}
+    {% for productDetails in products %}
+      {% if all_products[productDetails].title != blank %}
+        <a
+          href="{{ all_products[productDetails].url }}"
+          style="text-decoration: none; display: none;"
+          class="product-details-link"
+        >
+          <div class="detailedProduct product-{{ productDetails }} color-{{ section.settings.color_scheme }}">
+            <div class="productDetailsContainer">
+              <img src="{{ all_products[productDetails].featured_image | image_url: width: 480, height: 480 }}" width="480" height="480" loading="eager" alt="">
+            </div>
+            <p>{{ all_products[productDetails].title }}</p>
+            <p>{{ all_products[productDetails].price | money }}</p>
+          </div>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+<script src="{{ 'upng-product-hotspots.js' | asset_url }}" defer="defer"></script>
+<br>
+{% schema %}
+{
+  "name": "Product hotspots",
+  "class": "product-hotspots",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "product_hotspot_image",
+      "label": "Image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Hotspot",
+      "type": "hotspot",
+      "settings": [
+        {
+          "type": "range",
+          "default": 50,
+          "min": 0,
+          "max": 99,
+          "unit": "%",
+          "label": "t:sections.upng-hot-spot.settings.horizontal_pos",
+          "step": 1,
+          "id": "desktop_horizontal_pos"
+        },
+        {
+          "type": "range",
+          "id": "desktop_vertical_pos",
+          "default": 50,
+          "min": 0,
+          "max": 94,
+          "unit": "%",
+          "label": "t:sections.upng-hot-spot.settings.vertical_pos",
+          "step": 1
+        },
+        {
+          "type": "number",
+          "id": "desktop_size",
+          "default": 10,
+          "label": "t:sections.upng-hot-spot.settings.hotspot_size"
+        },
+        {
+          "type": "number",
+          "id": "icon_size",
+          "default": 3,
+          "label": "t:sections.upng-hot-spot.settings.hotspot_icon_size"
+        },
+        {
+          "type": "number",
+          "id": "mobile_icon_size",
+          "default": 3,
+          "label": "t:sections.upng-hot-spot.settings.hotspot_icon_size_mobile"
+        },
+        {
+          "type": "range",
+          "default": 50,
+          "min": 0,
+          "max": 99,
+          "unit": "%",
+          "label": "t:sections.upng-hot-spot.settings.horizontal_pos_mobile",
+          "step": 1,
+          "id": "mobile_horizontal_pos"
+        },
+        {
+          "type": "range",
+          "id": "mobile_vertical_pos",
+          "default": 50,
+          "min": 0,
+          "max": 94,
+          "unit": "%",
+          "label": "t:sections.upng-hot-spot.settings.vertical_pos_mobile",
+          "step": 1
+        },
+        {
+          "type": "number",
+          "id": "mobile_size",
+          "default": 10,
+          "label": "t:sections.upng-hot-spot.settings.hotspot_size_mobile"
+        },
+        {
+          "type": "text",
+          "id": "hotspot_title",
+          "label": "t:sections.upng-hot-spot.settings.title",
+          "default": "Default Title"
+        },
+        {
+          "type": "textarea",
+          "id": "hotspot_desc",
+          "label": "t:sections.upng-hot-spot.settings.content",
+          "default": "Default Description"
+        },
+        {
+          "type": "product",
+          "id": "hotspot_product",
+          "label": "t:sections.upng-hot-spot.settings.hotspot_product"
+        },
+        {
+          "type": "select",
+          "id": "hotspot_show_product",
+          "label": "t:sections.upng-hot-spot.settings.hotspot_show_product",
+          "options": [
+            {
+              "label": "True",
+              "value": "true"
+            },
+            {
+              "label": "False",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "hotspot_show_product_mobile",
+          "label": "t:sections.upng-hot-spot.settings.hotspot_show_product_mobile",
+          "options": [
+            {
+              "label": "True",
+              "value": "true"
+            },
+            {
+              "label": "False",
+              "value": "false"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Hotspots",
+      "blocks": [
+
+      ]
+    }
+  ]
+}
+{% endschema %}

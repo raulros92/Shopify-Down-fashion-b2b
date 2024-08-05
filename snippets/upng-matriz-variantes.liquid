@@ -1,0 +1,193 @@
+{% if product.options.size == 2 %}
+  <div id="matrix-container" >
+    {{ 'upng-matriz-variantes.css' | asset_url | stylesheet_tag }}
+    <h2>Variantes del producto</h2>
+    <table>
+      <tbody>
+        {% # Estas variables están asignadas en el orden que las tiene Shopify %}
+        {% assign option1 = product.options[0] %}
+        {% assign option2 = product.options[1] %}
+        {% if block.settings.invert_attributes %}
+          {% assign option1 = product.options[1] %}
+          {% assign option2 = product.options[0] %}
+        {% endif %}
+        <tr class="keys">
+          <th></th>
+          {% for variant1 in product.options_by_name[option1].values %}
+            <th>{{ variant1 }}</th>
+          {% endfor %}
+        </tr>
+        {% for variant2 in product.options_by_name[option2].values %}
+          <tr class="key2-row">
+            {% if block.settings.show_image %}
+              <th>
+                {% assign img_found = false %}
+                {% for variant in product.variants %}
+                  {% assign var_opt1 = variant.option1 %}
+                  {% assign var_opt2 = variant.option2 %}
+                  {% if block.settings.invert_attributes %}
+                    {% assign var_opt1 = variant.option2 %}
+                    {% assign var_opt2 = variant.option1 %}
+                  {% endif %}
+                  {% if var_opt2 == variant2 %}
+                    {% if variant.image.src != blank %}
+                      <img src="{{ variant.image.src | image_url: width: 100, height: 100 }}" width= "100" height= "100" loading="eager" alt="">
+                    {% else %}
+                      {{ variant2 }}
+                    {% endif %}
+                    {% assign img_found = true %}
+                    {% break %}
+                  {% endif %}
+                {% endfor %}
+              </th>
+            {% endif %}
+            {% unless img_found %}
+              <th>{{ variant2 }}</th>
+            {% endunless %}
+            {% for variant1 in product.options_by_name[option1].values %}
+              {% assign variant_id = 0 %}
+              {% assign found = false %}
+              {% assign availability = 0 %}
+              {% assign cart_quantity = 0 %}
+              {% assign disable_input = true %}
+              {% assign available_stock = 0 %}
+              {% assign stock_quantity = 0 %}
+              {% assign default_step = 1 %}
+              {% assign default_min = 0 %}
+              {% for variant in product.variants %}
+                {% assign var_opt1 = variant.option1 %}
+                {% assign var_opt2 = variant.option2 %}
+                {% if block.settings.invert_attributes %}
+                  {% assign var_opt1 = variant.option2 %}
+                  {% assign var_opt2 = variant.option1 %}
+                {% endif %}
+                {% if var_opt1 == variant1 and var_opt2 == variant2 %}
+                  {% assign found = true %}
+                  {% assign available_stock = variant.inventory_quantity %}
+                  {% if variant.available == true or variant.inventory_policy == 'continue' %}
+                    {% assign availability = 1 %}
+                    {% if variant.inventory_policy != 'continue' %}
+                      {% assign stock_quantity = variant.inventory_quantity %}
+                      {% if variant.quantity_rule.min != null %}
+                        {% assign default_min = variant.quantity_rule.min %}
+                      {% endif %}
+                      {% if variant.quantity_rule.increment != null %}
+                        {% assign default_step = variant.quantity_rule.increment %}
+                      {% endif %}
+                      {% if variant.quantity_rule.max != null %}
+                        {% if stock_quantity > variant.quantity_rule.max %}
+                          {% assign stock_quantity = variant.quantity_rule.max %}
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+                    {% if available_stock <= block.settings.stock_alert %}
+                      {% assign availability = 3 %}
+                    {% endif %}
+                    {% assign disable_input = false %}
+                    {% assign variant_id = variant.id %}
+                    {% break %}
+                  {% endif %}
+                  {% if variant.available == false and variant.incoming %}
+                    {% assign availability = 2 %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              {% if found != true %}
+                <td></td>
+                {% continue %}
+              {% endif %}
+              {% for prod in cart.items %}
+                {% assign opt_with_values_0 = prod.options_with_values[0].value %}
+                {% assign opt_with_values_1 = prod.options_with_values[1].value %}
+                {% if block.settings.invert_attributes %}
+                  {% assign opt_with_values_0 = prod.options_with_values[1].value %}
+                  {% assign opt_with_values_1 = prod.options_with_values[0].value %}
+                {% endif %}
+                {% if opt_with_values_0 == variant1 and opt_with_values_1 == variant2 %}
+                  {% assign cart_quantity = prod.quantity %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+              <td>
+                <div class="input-with-stock">
+                  <div
+                    id="Quantity-Form-{{ section.id }}"
+                    class="product-form__input product-form__quantity{% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_vertical_offset < 0 %} product-form__quantity-top{% endif %}"
+                    {{ block.shopify_attributes }}
+                  >
+                    {% comment %} TODO: enable theme-check once `item_count_for_variant` is accepted as valid filter {% endcomment %}
+                    {% # theme-check-disable %}
+                    {% # theme-check-enable %}
+                    <div class="price-per-item__container">
+                      <quantity-input class="quantity" data-url="{{ product.url }}" data-section="{{ section.id }}">
+                        {% unless disable_input %}
+                          <button class="quantity__button no-js-hidden" name="minus" type="button">
+                            <span class="visually-hidden">
+                              {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                            </span>
+                            {% render 'icon-minus' %}
+                          </button>
+                        {% endunless %}
+                        <input
+                          class="quantity__input"
+                          type="number"
+                          name="quantity"
+                          id="{{ variant_id }}"
+                          step="{{ default_step }}"
+                          min="{{ default_min }}"
+                          {% if stock_quantity > 0 %}
+                            {% unless disable_input %}
+                              max="{{ stock_quantity }}"
+                            {% endunless %}
+                          {% endif %}
+                          {% if disable_input %}
+                            disabled
+                          {% endif %}
+                          value="{{ cart_quantity }}"
+                          {% comment %} El usuario podría perfectamente pegar un decimal, por lo que hay que llevar cuidado. {% endcomment %}
+                          onkeydown="if(event.key==='.' || event.key==='-'){event.preventDefault();}"
+                        >
+                        {% unless disable_input %}
+                          <button class="quantity__button no-js-hidden" name="plus" type="button">
+                            <span class="visually-hidden">
+                              {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                            </span>
+                            {% render 'icon-plus' %}
+                          </button>
+                        {% endunless %}
+                      </quantity-input>
+                    </div>
+                  </div>
+                  <div class="stock-container">
+                    <div class="status-circle-{{ availability }}">
+                      <div></div>
+                    </div>
+                    {% if availability == 1 %}
+                      <span>Disponible</span>
+                    {% elsif availability == 0 %}
+                      <span>No Disponible</span>
+                    {% elsif availability == 2 %}
+                      <span>Próxima llegada</span>
+                    {% elsif availability == 3 %}
+                      <span>Últimas Unidades</span>
+                    {% endif %}
+                  </div>
+                </div>
+                {% assign selected_variant = product.variants.first %}
+                <span class = "upng-price">{{ selected_variant.price | money }}</span>
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <br>
+    <button class="product-form__submit button button--primary flex-container button--full-width" id="matrix-button">
+      <span class="loader-matrix-button">
+        <span></span>
+      </span>
+      <p>Añadir al carrito</p>
+    </button>
+  </div>
+  <script src="{{ 'upng-matriz-variantes.js' | asset_url }}" defer></script>
+{% endif %}
