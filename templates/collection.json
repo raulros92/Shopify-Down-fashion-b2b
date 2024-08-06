@@ -1,1 +1,75 @@
-{"sections":{"custom_liquid_EyrAdQ":{"type":"custom-liquid","settings":{"custom_liquid":"<style>\n#media-container {\n  width: 100%;\n  text-align: center;\n}\n#media-container video,\n#media-container img {\n  width: 100%;\n  height: auto;\n  margin: 0;\n}\n<\/style>\n\n<div id=\"media-container\">\n  {% if collection.metafields.custom.video-collection %}\n    <video muted autoplay playsinline loop>\n      <source src=\"{{ collection.metafields.custom.video-collection }}\">\n    <\/video>\n  {% elsif collection.metafields.custom.image %}\n    <img src=\"{{ collection.metafields.custom.image }}\">\n  {% endif %}\n<\/div>","color_scheme":"","padding_top":48,"padding_bottom":48}},"product-grid":{"type":"main-collection-product-grid","blocks":{"parrilla_foto_mW6MGd":{"type":"parrilla-foto","settings":{}},"parrilla_nombre_XhnRpy":{"type":"parrilla-nombre","settings":{}},"parrilla_descripcion_YTRJPD":{"type":"parrilla-descripcion","disabled":true,"settings":{}},"parrilla_precio_xRXL39":{"type":"parrilla-precio","settings":{}},"parrilla_botones_FBh4ih":{"type":"parrilla-botones","settings":{}}},"block_order":["parrilla_foto_mW6MGd","parrilla_nombre_XhnRpy","parrilla_descripcion_YTRJPD","parrilla_precio_xRXL39","parrilla_botones_FBh4ih"],"settings":{"products_per_page":12,"columns_desktop":3,"color_scheme":"","image_ratio":"portrait","image_shape":"default","show_secondary_image":true,"show_vendor":false,"show_hover_view_product":true,"show_rating":false,"enable_quick_add":true,"enable_filtering":true,"filter_type":"vertical","enable_sorting":true,"show_colors":false,"columns_mobile":"2","padding_top":48,"padding_bottom":48,"parrilla-ocultar-header-tabla":true}}},"order":["custom_liquid_EyrAdQ","product-grid"]}
+{
+  "sections": {
+    "custom_liquid_EyrAdQ": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<style>\n#media-container {\n  width: 100%;\n  text-align: center;\n}\n#media-container video,\n#media-container img {\n  width: 100%;\n  height: auto;\n  margin: 0;\n}\n<\/style>\n\n<div id=\"media-container\">\n  {% if collection.metafields.custom.video-collection %}\n    <video muted autoplay playsinline loop>\n      <source src=\"{{ collection.metafields.custom.video-collection }}\">\n    <\/video>\n  {% elsif collection.metafields.custom.image %}\n    <img src=\"{{ collection.metafields.custom.image }}\">\n  {% endif %}\n<\/div>",
+        "color_scheme": "",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "product-grid": {
+      "type": "main-collection-product-grid",
+      "blocks": {
+        "parrilla_foto_mW6MGd": {
+          "type": "parrilla-foto",
+          "settings": {
+          }
+        },
+        "parrilla_nombre_XhnRpy": {
+          "type": "parrilla-nombre",
+          "settings": {
+          }
+        },
+        "parrilla_descripcion_YTRJPD": {
+          "type": "parrilla-descripcion",
+          "disabled": true,
+          "settings": {
+          }
+        },
+        "parrilla_precio_xRXL39": {
+          "type": "parrilla-precio",
+          "settings": {
+          }
+        },
+        "parrilla_botones_FBh4ih": {
+          "type": "parrilla-botones",
+          "settings": {
+          }
+        }
+      },
+      "block_order": [
+        "parrilla_foto_mW6MGd",
+        "parrilla_nombre_XhnRpy",
+        "parrilla_descripcion_YTRJPD",
+        "parrilla_precio_xRXL39",
+        "parrilla_botones_FBh4ih"
+      ],
+      "settings": {
+        "products_per_page": 12,
+        "columns_desktop": 2,
+        "color_scheme": "",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_hover_view_product": true,
+        "show_rating": false,
+        "enable_quick_add": false,
+        "enable_filtering": true,
+        "filter_type": "vertical",
+        "enable_sorting": true,
+        "show_colors": false,
+        "columns_mobile": "1",
+        "padding_top": 48,
+        "padding_bottom": 48,
+        "parrilla-ocultar-header-tabla": true
+      }
+    }
+  },
+  "order": [
+    "custom_liquid_EyrAdQ",
+    "product-grid"
+  ]
+}
