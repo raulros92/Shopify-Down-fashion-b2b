@@ -121,7 +121,47 @@
                   }
                 </style>
 
+                {% comment %} New code with variant.options loop {% endcomment %}
                 {% unless customer.b2b? %}
+                  {% assign color_options = '' %}
+                  {% for option in product.options %}
+                    {% if option == 'Color' %}
+                      {% assign color_options = product.options_by_name.Color.values %}
+                      {% break %}
+                    {% endif %}
+                  {% endfor %}
+
+                  {% assign last_image = '' %}
+                  <div style="display: flex; z-index: 9; width: 100%; justify-content: center; align-items: center; gap: 0.5em;">
+                    {% for variant in product.variants %}
+                      {% assign variant_color = '' %}
+
+                      {% for option in variant.options %}
+                        {% if color_options contains option %}
+                          {% assign variant_color = option %}
+                        {% endif %}
+                      {% endfor %}
+
+                      {% if variant_color %}
+                        {% assign varImg = variant.image | image_url: width: '720px' %}
+                        {% if varImg == last_image %}
+                          {% continue %}
+                        {% endif %}
+                        {% assign last_image = varImg %}
+                        <div>
+                          <button
+                            class="variant-image-btn"
+                            image-data="{{ last_image }}"
+                            data-sku="{{variant.sku}}"
+                            style="height: 2em; width: 2em; background-color: {{ variant_color }};"
+                          ></button>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+
+                  {% comment %} OLD CODE WITH variant.option 1
+                  {% unless customer.b2b? %}
                   {% assign attribute_values = '' %}
                   {% for option in product.options %}
                     {% if option == 'Color' %}
@@ -150,7 +190,8 @@
                         {% endif %}
                       {% endfor %}
                     {% endfor %}
-                  </div>
+                  </div> {
+                  {% endcomment %}
                   
              <style>
                   .variant-image-btn {
