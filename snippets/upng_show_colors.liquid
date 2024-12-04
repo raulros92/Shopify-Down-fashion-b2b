@@ -4,26 +4,25 @@
     {% assign attribute_values = card_product.options_by_name.Color.values %}
   {% endif %}
 {% endfor %}
-{% assign last_image = '' %}
+{% assign processed_colors = '' %}
 <div class="btn-colors {% if show_sku == false %} btn-colors-margin {% endif %}">
   {% for variant in card_product.variants %}
     {% for option in attribute_values %}
       {% if variant.option1 == option or variant.option2 == option or variant.option3 == option %}
-        {% assign varImg = variant.image | image_url: width: '720px' %}
-        {% if varImg == last_image %}
-          {% break %}
-        {% endif %}
-        {% assign last_image = varImg %}
-        <div>
-          <button
-            type="button"
-            class="variant-image-btn"
-            image-data="{{ last_image }}"
-            data-sku="{{variant.sku}}"
-            style="background-color: {{ variant.option1 }};"
-          ></button>
-        </div>
-        {% break %}
+        {% assign color_key = option | handleize %}
+        {% unless processed_colors contains color_key %}
+          {% assign processed_colors = processed_colors | append: color_key | append: ',' %}
+          {% assign varImg = variant.image | image_url: width: '720px' %}
+          <div>
+            <button
+              type="button"
+              class="variant-image-btn"
+              image-data="{{ varImg }}"
+              data-sku="{{variant.sku}}"
+              style="background-color: {{ option }};"
+            ></button>
+          </div>
+        {% endunless %}
       {% endif %}
     {% endfor %}
   {% endfor %}
